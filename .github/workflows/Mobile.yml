@@ -18,10 +18,10 @@ jobs:
         dotnet-version: '5.0.x'
 
     - name: Install dependencies
-      run: nuget restore LocStatsMobile\MobileApp\MobileApp.sln
+      run: nuget restore LocStatsMobile/MobileApp/MobileApp.sln
 
     - name: Build
-      run: msbuild LocStatsMobile\MobileApp\MobileApp.sln
+      run: msbuild LocStatsMobile/MobileApp/MobileApp.sln
       
     - name: Test
-      run: dotnet test LocStatsMobile\MobileApp\MobileApp.sln
+      run: dotnet test LocStatsMobile/MobileApp/MobileApp.sln
