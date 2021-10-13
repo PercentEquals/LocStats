@@ -6,6 +6,16 @@ environment:
   - solution_name: LocStatsMobile\MobileApp\MobileApp.sln
 before_build:
   - ps: nuget restore $env:solution_name
+  - ps: >-
+        if ($env:solution_name -eq "LocStatsMobile\MobileApp\MobileApp.sln") {
+          $env:ANDROID_HOME="$env:APPVEYOR_BUILD_FOLDER\android"
+
+          $zipPath = "$($env:APPVEYOR_BUILD_FOLDER)\sdk-tools-windows.zip"
+          (New-Object Net.WebClient).DownloadFile('https://dl.google.com/android/repository/sdk-tools-windows-4333796.zip', $zipPath)
+
+          Invoke-Expression "7z x sdk-tools-windows.zip -o$env:ANDROID_HOME"
+          Invoke-Expression "yes | $env:ANDROID_HOME\tools\bin\sdkmanager.bat --licenses"
+        }
 build_script:
   - msbuild %solution_name%
 test_script:
