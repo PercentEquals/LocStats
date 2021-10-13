@@ -1,8 +1,0 @@
-version: 0.0.{build}
-image: Visual Studio 2019
-install:
-  - ps: nuget restore LocStatsBackend\LocStatsBackend.sln
-build:
-  verbosity: minimal
-test_script:
-  - dotnet test ".\LocStatsBackend\LocStatsBackendAPI.Tests\LocStatsBackendAPI.Tests.csproj" --configuration Release--no-build
