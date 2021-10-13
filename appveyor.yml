@@ -2,13 +2,12 @@ version: 0.0.{build}
 image: Visual Studio 2019
 
 environment:
-  ANDROID_HOME: "C:\\android"
   matrix:
   - solution_name: LocStatsBackend\LocStatsBackend.sln
   - solution_name: LocStatsMobile\MobileApp\MobileApp.sln
 
 init:
-  - mkdir "%ANDROID_HOME%
+  - $env:ANDROID_HOME="$env:APPVEYOR_BUILD_FOLDER\android"
   - appveyor DownloadFile "https://dl.google.com/android/repository/sdk-tools-windows-4333796.zip"
   - 7z x "sdk-tools-windows-4333796.zip" -o$env:ANDROID_HOME > nul
 
