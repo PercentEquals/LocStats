@@ -1,16 +1,12 @@
 version: 0.0.{build}
 image: Visual Studio 2019
-install:
-  - ps: nuget restore LocStatsBackend\LocStatsBackend.sln
-  - ps: nuget restore LocStatsMobile\MobileApp\MobileApp.sln
-  - ps: nuget restore LocStatsMobile\MobileAppTests\MobileAppTests.sln
 environment:
   matrix:
   - solution_name: LocStatsBackend\LocStatsBackend.sln
   - solution_name: LocStatsMobile\MobileApp\MobileApp.sln
-  - solution_name: LocStatsMobile\MobileAppTests\MobileAppTests.sln
+install:
+  - ps: nuget restore %solution_name%
 build_script:
   - msbuild %solution_name%
 test_script:
-  - dotnet test ".\LocStatsBackend\LocStatsBackendAPI.Tests\LocStatsBackendAPI.Tests.csproj" --configuration Release--no-build
-  - dotnet test ".\LocStatsMobile\MobileAppTests\MobileAppTests.csproj" --configuration Release--no-build
+  - dotnet test %solution_name%
