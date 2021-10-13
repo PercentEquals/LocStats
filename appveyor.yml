@@ -5,7 +5,7 @@ environment:
   - solution_name: LocStatsBackend\LocStatsBackend.sln
   - solution_name: LocStatsMobile\MobileApp\MobileApp.sln
 before_build:
-  - ps: nuget restore %solution_name%
+  - ps: nuget restore $env:solution_name
 build_script:
   - msbuild %solution_name%
 test_script:
