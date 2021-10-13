@@ -10,7 +10,7 @@ environment:
 init:
   - mkdir "%ANDROID_HOME%
   - appveyor DownloadFile "https://dl.google.com/android/repository/sdk-tools-windows-4333796.zip"
-  - 7z x "sdk-tools-windows-4333796" -o$env:ANDROID_HOME > nul
+  - 7z x "sdk-tools-windows-4333796.zip" -o$env:ANDROID_HOME > nul
 
 install:
   - echo y | $env:ANDROID_HOME\tools\bin\sdkmanager.bat --licenses
