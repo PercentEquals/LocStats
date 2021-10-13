@@ -7,7 +7,7 @@ environment:
   - solution_name: LocStatsMobile\MobileApp\MobileApp.sln
 
 init:
-  - $env:ANDROID_HOME="$env:APPVEYOR_BUILD_FOLDER\android"
+  - ps: $env:ANDROID_HOME="$env:APPVEYOR_BUILD_FOLDER\android"
   - appveyor DownloadFile "https://dl.google.com/android/repository/sdk-tools-windows-4333796.zip"
   - 7z x "sdk-tools-windows-4333796.zip" -o$env:ANDROID_HOME > nul
 
