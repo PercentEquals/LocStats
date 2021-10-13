@@ -4,7 +4,7 @@ environment:
   matrix:
   - solution_name: LocStatsBackend\LocStatsBackend.sln
   - solution_name: LocStatsMobile\MobileApp\MobileApp.sln
-install:
+before_build:
   - ps: nuget restore %solution_name%
 build_script:
   - msbuild %solution_name%
