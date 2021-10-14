@@ -29,6 +29,12 @@ namespace LocStatsBackendAPI.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Returns random weather data
+        /// </summary>
+        /// <returns>Random weather data</returns>
+        /// <response code="200">Returns random weather data</response>
+        /// <response code="401">Unauthorized access</response>
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
