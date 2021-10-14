@@ -1,0 +1,24 @@
+version: 0.0.{build}
+image: Visual Studio 2019
+
+environment:
+  matrix:
+  - solution_name: LocStatsBackend\LocStatsBackend.sln
+    is_mobile: false
+
+  - solution_name: LocStatsMobile\MobileApp\MobileApp.sln
+    is_mobile: true
+
+
+install:
+  - ps: $env:ANDROID_HOME="$env:APPVEYOR_BUILD_FOLDER\android"
+  - cmd: if %is_mobile% equ true echo y | "C:\Program Files (x86)\Android\android-sdk\tools\bin\sdkmanager.bat" "platform-tools" "platforms;android-30"
+
+before_build:
+  - ps: nuget restore $env:solution_name -Verbosity quiet
+
+build_script:
+  - msbuild %solution_name%
+
+test_script:
+  - cmd: if %is_mobile% neq true dotnet test %solution_name%
