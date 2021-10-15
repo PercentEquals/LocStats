@@ -5,41 +5,50 @@ using Android.Runtime;
 using Android.Util;
 using Android.Views;
 using Android.Widget;
-using MobileApp.Managers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MobileApp.Managers;
 
 namespace MobileApp.Fragments
 {
-    public class FragmentLogIn : AndroidX.Fragment.App.Fragment
+    public class FragmentRegistration : AndroidX.Fragment.App.Fragment
     {
-        private Action logInCallback;
         private TextView infoText;
-        public FragmentLogIn(Action logInCallback)
+        private Action registerCallback;
+
+        public FragmentRegistration(Action registerCallback)
         {
-            this.logInCallback = logInCallback;
+            this.registerCallback = registerCallback;
         }
 
         public override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
 
-           
+            
+            // Create your fragment here
         }
 
         public override void OnStart()
         {
             base.OnStart();
 
-            Button button = View.FindViewById<Button>(Resource.Id.buttonLogIn);
-            button.Click += logInButtonClick;
-
             infoText = View.FindViewById<TextView>(Resource.Id.infoText);
+            infoText.Visibility = ViewStates.Invisible;
+
+            View.FindViewById<Button>(Resource.Id.buttonRegister).Click += register;
         }
 
-        private void logInButtonClick(object sender, EventArgs e)
+        public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+        {
+            
+            return inflater.Inflate(Resource.Layout.activity_register, container, false);
+
+        }
+
+        private void register(object sender, EventArgs e)
         {
             EditText editTextEmail = View.FindViewById<EditText>(Resource.Id.editTextEmail);
             EditText editTextPassword = View.FindViewById<EditText>(Resource.Id.editTextPassword);
@@ -47,21 +56,14 @@ namespace MobileApp.Fragments
             string message = "";
             if (ValidationManager.checkUserInput(ref message, editTextEmail.Text, editTextPassword.Text))
             {
-                logInCallback();
+                registerCallback();
             }
             else
             {
                 infoText.Text = message;
                 infoText.Visibility = ViewStates.Visible;
             }
-
-        }
-
-        public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-        {
             
-            return inflater.Inflate(Resource.Layout.activity_log_in, container, false);
-
         }
     }
 }

@@ -69,7 +69,9 @@
     <Compile Include="Fragments\FragmentDataShow.cs" />
     <Compile Include="Fragments\FragmentLocalization.cs" />
     <Compile Include="Fragments\FragmentLogIn.cs" />
+    <Compile Include="Fragments\FragmentRegistration.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="Managers\ValidationManager.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -164,6 +166,11 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\activity_data_show.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\activity_register.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>

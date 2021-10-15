@@ -27,11 +27,10 @@ namespace MobileApp
             navigation.SetOnNavigationItemSelectedListener(this);
             navigation.Visibility = ViewStates.Gone;
 
-            
-
             fragments = new List<AndroidX.Fragment.App.Fragment>();
 
             fragments.Add(new FragmentLogIn(logInCallback));
+            fragments.Add(new FragmentRegistration(registerCallback));
             fragments.Add(new FragmentLocalization());
             fragments.Add(new FragmentDataShow());
 
@@ -54,10 +53,15 @@ namespace MobileApp
         
         private void logInCallback()
         {
-            loadFragment(1);
+            loadFragment(2);
 
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
             navigation.Visibility = ViewStates.Visible;
+        }
+
+        private void registerCallback()
+        {
+            loadFragment(0);
         }
 
         public bool OnNavigationItemSelected(IMenuItem item)
@@ -65,11 +69,11 @@ namespace MobileApp
             switch (item.ItemId)
             {
                 case Resource.Id.navigation_localize:
-                    loadFragment(1);
+                    loadFragment(2);
                     return true;
 
                 case Resource.Id.navigation_dashboard:
-                    loadFragment(2);
+                    loadFragment(3);
                     return true;
             }
             return false;
