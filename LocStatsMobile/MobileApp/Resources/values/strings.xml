@@ -1,5 +1,14 @@
 <resources>
-    <string name="app_name">Świetna aplikacja</string>
-    <string name="title_localize">Śledź lokalizację</string>
-    <string name="title_dashboard">Przeglądaj dane</string>
+  <string name="app_name">Świetna aplikacja</string>
+  <string name="title_localize">Śledź lokalizację</string>
+  <string name="title_dashboard">Przeglądaj dane</string>
+  <string name="location_updated">Lokalizacja zaktualizowana: %1$s</string>
+  <string name="launch_activity">Uruchom</string>
+  <string name="end_service">Zakończ</string>
+  <string name="request_location_updates">Włącz pobieranie lokalizacji</string>
+  <string name="remove_location_updates">Wyłącz pobieranie lokalizacji</string>
+  <string name="permission_rationale">Aplikacja potrzebuje uprawnień do lokalizacji</string>
+  <string name="permission_denied_explanation">Bez lokalizacji aplikacja nie może funkcjonować</string>
+  <string name="settings">Ustawienia</string>
+  <string name="ok">OK</string>
 </resources>
