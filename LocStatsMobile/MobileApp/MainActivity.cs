@@ -2,45 +2,43 @@
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
-using Android.Widget;
 using AndroidX.AppCompat.App;
 using Google.Android.Material.BottomNavigation;
 using MobileApp.Fragments;
 using System.Collections.Generic;
-
 
 namespace MobileApp
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
     public class MainActivity : AppCompatActivity, BottomNavigationView.IOnNavigationItemSelectedListener
     {
-        List<AndroidX.Fragment.App.Fragment> fragments;
+        private List<AndroidX.Fragment.App.Fragment> _fragments;
         
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
-
            
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
             navigation.SetOnNavigationItemSelectedListener(this);
             navigation.Visibility = ViewStates.Gone;
 
-            fragments = new List<AndroidX.Fragment.App.Fragment>();
+            _fragments = new List<AndroidX.Fragment.App.Fragment>
+            {
+                new FragmentLogIn(LogInCallback),
+                new FragmentRegistration(RegisterCallback),
+                new FragmentLocalization(),
+                new FragmentDataShow()
+            };
 
-            fragments.Add(new FragmentLogIn(logInCallback));
-            fragments.Add(new FragmentRegistration(registerCallback));
-            fragments.Add(new FragmentLocalization());
-            fragments.Add(new FragmentDataShow());
-
-            loadFragment(0);
+            LoadFragment(0);
         }
 
-        private void loadFragment(int fragmentIndex)
+        private void LoadFragment(int fragmentIndex)
         {
             SupportFragmentManager.BeginTransaction()
-                .Replace(Resource.Id.frameLayoutMain, fragments[fragmentIndex])
+                .Replace(Resource.Id.frameLayoutMain, _fragments[fragmentIndex])
                 .Commit();
         }
 
@@ -51,17 +49,17 @@ namespace MobileApp
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
         
-        private void logInCallback()
+        private void LogInCallback()
         {
-            loadFragment(2);
+            LoadFragment(2);
 
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
             navigation.Visibility = ViewStates.Visible;
         }
 
-        private void registerCallback()
+        private void RegisterCallback()
         {
-            loadFragment(0);
+            LoadFragment(0);
         }
 
         public bool OnNavigationItemSelected(IMenuItem item)
@@ -69,15 +67,14 @@ namespace MobileApp
             switch (item.ItemId)
             {
                 case Resource.Id.navigation_localize:
-                    loadFragment(2);
+                    LoadFragment(2);
                     return true;
 
                 case Resource.Id.navigation_dashboard:
-                    loadFragment(3);
+                    LoadFragment(3);
                     return true;
             }
             return false;
         }
     }
 }
-
