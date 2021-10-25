@@ -34,7 +34,7 @@ jobs:
         run: dotnet publish LocStatsBackend/LocStatsBackend.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Generate scripts
-        run: dotnet ef migrations script --output ${{env.DOTNET_ROOT}}/sql/sql-script.sql --idempotent --no-build --context AppDbContext --project LocStatsBackend\LocStatsBackendAPI\LocStatsBackendAPI.csproj
+        run: dotnet ef migrations script --output ${{env.DOTNET_ROOT}}/sql/sql-script.sql --idempotent --context AppDbContext --project LocStatsBackend\LocStatsBackendAPI\LocStatsBackendAPI.csproj
 
       - name: App Settings Variable Substitution
         uses: microsoft/variable-substitution@v1
