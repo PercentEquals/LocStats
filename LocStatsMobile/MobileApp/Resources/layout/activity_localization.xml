@@ -4,18 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <TextView
-        android:text="Tutaj będziemy włączać i wyłączać śledzenie lokalizacji i może jeszce coś więcej"
+        android:text="Zalogowany jako: "
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minWidth="25px"
         android:minHeight="25px"
+        android:layout_marginBottom="50dp"
         android:id="@+id/textView1" />
     <Button
-      android:id="@+id/request_location_updates_button"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/request_location_updates" />
+        android:id="@+id/request_location_updates_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/request_location_updates" />
     <Button
       android:id="@+id/remove_location_updates_button"
       android:layout_width="match_parent"

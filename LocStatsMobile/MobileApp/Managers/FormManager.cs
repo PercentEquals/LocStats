@@ -6,10 +6,10 @@ namespace MobileApp.Managers
 {
     static class FormManager
     {
-        public static void RunForm(string email, string password, Action callback, TextView info)
+        public static void RunForm(Action callback, TextView info, string password, string username, string email = null)
         {
             string message = "";
-            if (ValidationManager.CheckUserInput(ref message, email, password))
+            if (ValidationManager.CheckUserInput(ref message, username, password, email))
             {
                 callback();
             }
