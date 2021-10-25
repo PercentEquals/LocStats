@@ -26,4 +26,4 @@ test_script:
 
 artifacts:
   - path: '*.apk'
-  - name: LocStatsApk
+    name: LocStatsApk
