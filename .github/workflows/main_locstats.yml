@@ -22,17 +22,26 @@ jobs:
           dotnet-version: '5.0.x'
           include-prerelease: true
 
+      - name: Install EF Tool
+        run: |
+            dotnet new tool-manifest
+            dotnet tool install dotnet-ef
+
       - name: Build with dotnet
         run: dotnet build LocStatsBackend/LocStatsBackend.sln --configuration Release
 
-      - name: dotnet publish
+      - name: Execute dotnet publish
         run: dotnet publish LocStatsBackend/LocStatsBackend.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp
+
+      - name: Generate scripts
+        run: dotnet ef migrations script --output ${{env.DOTNET_ROOT}}/sql/sql-script.sql --idempotent --no-build --context AppDbContext
 
       - name: App Settings Variable Substitution
         uses: microsoft/variable-substitution@v1
         with:
           files: '${{env.DOTNET_ROOT}}/myapp/appsettings.json'
         env:
+          ConnectionStrings.DefaultConnection: ${{ secrets.AZURE_CONNECTION_STRING }}
           JwtConfig.Secret: ${{ secrets.JWT_SECRET }}
 
       - name: Upload artifact for deployment job
@@ -53,6 +62,13 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: .net-app
+
+      - name: Azure SQL Deploy
+        uses: Azure/sql-action@v1
+        with:
+          server-name: ${{ secrets.AZURE_DB_LINK }}
+          connection-string: ${{ secrets.AZURE_CONNECTION_STRING }}
+          sql-file: ${{env.DOTNET_ROOT}}/sql/sql-script.sql
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
