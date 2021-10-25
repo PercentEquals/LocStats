@@ -28,10 +28,10 @@ jobs:
             dotnet tool install dotnet-ef
 
       - name: Build with dotnet
-        run: dotnet build LocStatsBackend/LocStatsBackend.sln --configuration Release
+        run: dotnet build LocStatsBackend\LocStatsBackendAPI\LocStatsBackendAPI.csproj --configuration Release
 
       - name: Execute dotnet publish
-        run: dotnet publish LocStatsBackend/LocStatsBackend.sln -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish LocStatsBackend\LocStatsBackendAPI\LocStatsBackendAPI.csproj -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Generate scripts
         run: dotnet ef migrations script --output ${{env.DOTNET_ROOT}}/myapp/sql/sql-script.sql --idempotent --context AppDbContext --project LocStatsBackend\LocStatsBackendAPI\LocStatsBackendAPI.csproj
