@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal">
-
     <TextView
         android:text="Zaloguj się"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -19,7 +18,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView1" />
-
     <EditText
         android:inputType="textEmailAddress"
         android:layout_width="match_parent"
@@ -44,10 +42,14 @@
         android:layout_height="wrap_content"
         android:id="@+id/buttonLogIn" />
     <TextView
-        android:text="Na razie przechodzi wszystko"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:layout_width="match_parent"
+        android:text="Wprowadź poprawne dane"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="274.0dp"
         android:layout_height="wrap_content"
-        android:id="@+id/textView4" />
+        android:id="@+id/infoText"
+        android:textColor="#ff0000"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        android:gravity="center_horizontal"/>
 
 </LinearLayout>

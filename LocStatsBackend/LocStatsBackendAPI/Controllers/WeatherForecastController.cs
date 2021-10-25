@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Web.Resource;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +12,7 @@ namespace LocStatsBackendAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -23,6 +27,12 @@ namespace LocStatsBackendAPI.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Returns random weather data
+        /// </summary>
+        /// <returns>Random weather data</returns>
+        /// <response code="200">Returns random weather data</response>
+        /// <response code="401">Unauthorized access</response>
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {

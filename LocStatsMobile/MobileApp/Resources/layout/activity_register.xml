@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal">
+    <TextView
+        android:text="Zarejestruj się"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView3"
+        android:layout_marginBottom="50dp" />
+    <TextView
+        android:text="E-mail"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView1" />
+    <EditText
+        android:inputType="textEmailAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:id="@+id/editTextEmail"
+        android:defaultFocusHighlightEnabled="true" />
+    <TextView
+        android:text="Hasło"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView2" />
+    <TextView
+        android:text="Hasło musi zawierać mimimum 8 znaków"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView4" />
+    <EditText
+        android:inputType="textPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextPassword" />
+    <Button
+        android:text="Zarejestruj"
+        android:layout_width="220.5dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonRegister" />
+    <TextView
+        android:text="Wprowadź poprawne dane"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="274.0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/infoText"
+        android:textColor="#ff0000"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"/>
+    <Button
+        android:text="Anuluj"
+        android:layout_width="128.5dp"
+        android:layout_height="38.0dp"
+        android:id="@+id/buttonCancel"
+        android:textSize="10dp"/>
+
+</LinearLayout>

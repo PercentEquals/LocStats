@@ -66,12 +66,22 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Services\Sublocation\LocationCallbackImpl.cs" />
+    <Compile Include="Services\Sublocation\CustomServiceConnection.cs" />
     <Compile Include="Fragments\FragmentDataShow.cs" />
     <Compile Include="Fragments\FragmentLocalization.cs" />
     <Compile Include="Fragments\FragmentLogIn.cs" />
+    <Compile Include="Fragments\FragmentRegistration.cs" />
+    <Compile Include="MyReceiver.cs" />
+    <Compile Include="Services\Sublocation\GetLastLocationOnCompleteListener.cs" />
+    <Compile Include="Services\LocationUpdatesService.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="Managers\FormManager.cs" />
+    <Compile Include="Managers\ValidationManager.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Sublocation\LocationUpdatesServiceBinder.cs" />
+    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -151,6 +161,18 @@
     </PackageReference>
     <PackageReference Include="Xamarin.Google.Android.Material" Version="1.0.0.1" />
     <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+    <PackageReference Include="Xamarin.GooglePlayServices.Base">
+      <Version>117.6.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.GooglePlayServices.Basement">
+      <Version>117.6.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.GooglePlayServices.Location">
+      <Version>118.0.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.GooglePlayServices.Tasks">
+      <Version>117.2.1.1</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\activity_log_in.xml">
@@ -167,6 +189,18 @@
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\activity_register.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_cancel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_launch.png" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
     Other similar extension points exist, see Microsoft.Common.targets.
