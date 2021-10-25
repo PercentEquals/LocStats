@@ -25,5 +25,5 @@ test_script:
   - cmd: if %is_mobile% neq true dotnet test %solution_name%
 
 artifacts:
-  - path: '*.apk'
+  - path: '**\*.apk'
     name: LocStatsApk
