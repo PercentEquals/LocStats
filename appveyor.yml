@@ -18,7 +18,12 @@ before_build:
   - ps: nuget restore $env:solution_name -Verbosity quiet
 
 build_script:
-  - msbuild %solution_name%
+  - cmd: if %is_mobile% neq true msbuild /p:Configuration=Release %solution_name%
+  - cmd: if %is_mobile% equ true msbuild /t:PackageForAndroid /p:Configuration=Release %solution_name%
 
 test_script:
   - cmd: if %is_mobile% neq true dotnet test %solution_name%
+
+artifacts:
+  - path: '**\*.apk'
+    name: LocStatsApk
