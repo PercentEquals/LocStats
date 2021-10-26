@@ -40,7 +40,7 @@ namespace MobileApp.Fragments
             EditText editTextUsername = View.FindViewById<EditText>(Resource.Id.editTextUsername);
             EditText editTextPassword = View.FindViewById<EditText>(Resource.Id.editTextPassword);
 
-            FormManager.RunForm(_logInCallback, _infoText, editTextPassword.Text, editTextUsername.Text);
+            FormManager.RunForm(_logInCallback, _infoText, editTextPassword.Text, editTextUsername.Text, ConnectionManager.Register);
         }
 
         private void RegisterButtonClick(object sender, EventArgs e)

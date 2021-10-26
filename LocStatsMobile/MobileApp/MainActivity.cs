@@ -76,7 +76,7 @@ namespace MobileApp
             LoadFragment(0);
         }
 
-        private async void RegisterCallback()
+        private void RegisterCallback()
         {
             LoadFragment(2);
 

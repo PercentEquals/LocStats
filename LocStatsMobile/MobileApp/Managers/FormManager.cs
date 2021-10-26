@@ -1,17 +1,31 @@
 ﻿using Android.Views;
 using Android.Widget;
 using System;
+using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace MobileApp.Managers
 {
     static class FormManager
     {
-        public static void RunForm(Action callback, TextView info, string password, string username, string email = null)
+        public static async void RunForm(Action callback, TextView info, string password, string username,
+            Func<string, string, string, Task<(bool success, string token, string errorMessage)>> func, string email = null)
         {
             string message = "";
             if (ValidationManager.CheckUserInput(ref message, username, password, email))
             {
-                callback();
+                var response = await func(email, username, password);
+
+                if (response.success)
+                {
+                    callback();
+                }
+                else
+                {
+                    info.Text = response.errorMessage;
+                    info.Visibility = ViewStates.Visible;
+                }
+                
             }
             else
             {
