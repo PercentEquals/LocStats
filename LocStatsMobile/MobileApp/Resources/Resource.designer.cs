@@ -4818,7 +4818,7 @@ namespace MobileApp
 			public const int list_item = 2131230866;
 			
 			// aapt resource value: 0x7F080093
-			public const int map = 2131230867;
+			public const int map_container = 2131230867;
 			
 			// aapt resource value: 0x7F080094
 			public const int masked = 2131230868;
