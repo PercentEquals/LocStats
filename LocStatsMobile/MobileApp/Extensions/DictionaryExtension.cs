@@ -33,6 +33,7 @@ namespace MobileApp.Extensions
 
             s += "}";
 
+
             return s;
         }
 

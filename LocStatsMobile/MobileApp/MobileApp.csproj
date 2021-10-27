@@ -69,6 +69,7 @@
     <Compile Include="Database\LocationRepo.cs" />
     <Compile Include="Database\LocationModel.cs" />
     <Compile Include="Database\LocationDatabase.cs" />
+    <Compile Include="Extensions\DictionaryExtension.cs" />
     <Compile Include="Managers\ConnectionManager.cs" />
     <Compile Include="Services\Sublocation\LocationCallbackImpl.cs" />
     <Compile Include="Services\Sublocation\CustomServiceConnection.cs" />
@@ -216,6 +217,7 @@
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\ic_launch.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
     Other similar extension points exist, see Microsoft.Common.targets.
