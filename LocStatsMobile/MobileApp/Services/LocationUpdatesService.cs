@@ -1,4 +1,5 @@
-﻿using Android.App;
+﻿using System;
+using Android.App;
 using Android.Content;
 using Android.Gms.Location;
 using Android.Locations;
@@ -7,6 +8,7 @@ using Android.Support.V4.App;
 using Android.Support.V4.Content;
 using Android.Util;
 using Java.Lang;
+using MobileApp.Database;
 using MobileApp.Services.Sublocation;
 
 namespace MobileApp.Services
@@ -89,10 +91,13 @@ namespace MobileApp.Services
 		 */
 		public Location Location;
 
+        private LocationRepo LocRepo;
+
 		public LocationUpdatesService()
 		{
 			_binder = new LocationUpdatesServiceBinder(this);
-		}
+            LocRepo = new LocationRepo();
+        }
 
         public override void OnCreate()
 		{
@@ -282,7 +287,21 @@ namespace MobileApp.Services
 
 			Location = location;
 
-			// Notify anyone listening for broadcasts about the new location.
+			LocRepo.AddLocation(Location.Time, Location.Latitude, Location.Longitude);
+
+            if (LocRepo.GetLocationsLength() > 10)
+            {
+                Console.WriteLine("10 Locations:");
+                foreach (LocationModel loc in LocRepo.GetAllLocations())
+				{
+					
+					Console.WriteLine($"{loc.Timestamp}, {loc.Latitude}, {loc.Longitude}");
+                }
+                Console.WriteLine("Deleting All Locations");
+                LocRepo.DeleteAllLocations();
+            }
+
+            // Notify anyone listening for broadcasts about the new location.
 			Intent intent = new Intent(ActionBroadcast);
 			intent.PutExtra(ExtraLocation, location);
 			LocalBroadcastManager.GetInstance(ApplicationContext).SendBroadcast(intent);
