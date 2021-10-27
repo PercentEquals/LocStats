@@ -183,6 +183,9 @@
     <PackageReference Include="Xamarin.GooglePlayServices.Location">
       <Version>118.0.0.1</Version>
     </PackageReference>
+    <PackageReference Include="Xamarin.GooglePlayServices.Maps">
+      <Version>117.0.1.1</Version>
+    </PackageReference>
     <PackageReference Include="Xamarin.GooglePlayServices.Tasks">
       <Version>117.2.1.1</Version>
     </PackageReference>
@@ -213,7 +216,6 @@
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\ic_launch.png" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
     Other similar extension points exist, see Microsoft.Common.targets.
