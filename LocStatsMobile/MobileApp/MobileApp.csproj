@@ -66,6 +66,7 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\DictionaryExtension.cs" />
     <Compile Include="Managers\ConnectionManager.cs" />
     <Compile Include="Services\Sublocation\LocationCallbackImpl.cs" />
     <Compile Include="Services\Sublocation\CustomServiceConnection.cs" />

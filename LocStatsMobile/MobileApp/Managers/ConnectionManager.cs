@@ -14,14 +14,41 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using MobileApp.Extensions;
 
 namespace MobileApp.Managers
 {
     public static class ConnectionManager
     {
-        private const string URL = "https://localhost:44343/";
+        private const string URL = "https://192.168.0.217:45455/"; //download VS extension: Conveyor by Keyoti, paste here address from field 'Remote URL'
 
-        public static async Task<(bool success, string token, string errorMessage)> Register(string email, string username, string password)
+        //private const string URL = "https://locstats.azurewebsites.net/";
+
+        private static string _currentToken;
+
+        public static async Task<(bool success, string errorMessage)> Register(string email, string username, string password)
+        {
+            return await PostRequest(new Dictionary<string, string>()
+                {
+                    { "email", email },
+                    { "userName", username },
+                    { "password", password }
+
+                }.ToJsonString(), "api/Auth/Register");
+              
+        }
+
+        public static async Task<(bool success, string errorMessage)> LogIn (string username, string password)
+        {
+            return await PostRequest(new Dictionary<string, string>()
+                { 
+                    { "userName", username },
+                    { "password", password }
+
+                }.ToJsonString(), "api/Auth/Login");
+        }
+
+        private static async Task<(bool success, string errorMessage)> PostRequest (string jsonString, string endpoint)
         {
             var httpClientHandler = new HttpClientHandler();
 
@@ -30,39 +57,50 @@ namespace MobileApp.Managers
 
             using (var client = new HttpClient(httpClientHandler))
             {
-                client.BaseAddress = new Uri(URL + "api/auth/register");
-
-
-                string jsonClientString = "{\"email\":\"" + email + "\",\"userName\":\"" + username + "\",\"password\":\"" + password + "\"}";
-
-                var content = new StringContent(jsonClientString, Encoding.UTF8, "application/json");
-                content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-                var response = await client.PostAsync(URL, content);
-
-
-                if (response != null)
+                try
                 {
-                    var jsonString = await response.Content.ReadAsStringAsync();
+                    client.BaseAddress = new Uri(URL);
 
-                    dynamic responseJson = JsonConvert.DeserializeObject(jsonString);
+                    var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
+                    content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
-                    if (response.IsSuccessStatusCode)
+                    client.Timeout = TimeSpan.FromMilliseconds(30000);
+
+                    var response = await client.PostAsync(endpoint, content);
+
+
+                    if (response != null)
                     {
-                        return (response.IsSuccessStatusCode, responseJson.token, "");
+                        var responeJsonString = await response.Content.ReadAsStringAsync();
+
+                        dynamic responseJson = JsonConvert.DeserializeObject(responeJsonString);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            _currentToken = responseJson.token.ToString();
+
+                            return (true, "");
+                        }
+                        else
+                        {
+                            return (false, responseJson.errors.ToString().Trim(new char[] { ']', '[', '\n' }));
+                        }
+
                     }
                     else
                     {
-                        return (false, null, responseJson.errors.ToString());
+                        return (false, "No response from server");
                     }
-
                 }
-                else
+                catch (HttpRequestException e)
                 {
-                    return (false, null, "No response from server");
+                    return (false, e.Message);
+                }
+                catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException e)
+                {
+                    return (false, e.Message);
                 }
             }
-
         }
 
     }
