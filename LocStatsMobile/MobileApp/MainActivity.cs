@@ -166,6 +166,13 @@ namespace MobileApp
         {
             LoadFragment(2);
 
+            Android.App.AlertDialog infoBox = new Android.App.AlertDialog.Builder(this)
+                .SetPositiveButton("Zamknij", (sender, args) =>
+                { })
+                .SetMessage("Logowanie zakończone sukcesem!")
+                .SetTitle("Logowanie")
+                .Show();
+
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
             navigation.Visibility = ViewStates.Visible;
         }
