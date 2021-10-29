@@ -47,13 +47,9 @@ namespace LocStatsBackendAPI.Controllers
             try
             {
                 var newUser = await _userService.RegisterUser(user);
-                var jwtToken = _userService.GenerateJwtToken(newUser);
+                var jwtToken = await _userService.GenerateJwtToken(newUser);
 
-                return new JsonResult(new AuthSuccessResponse
-                {
-                    Success = true,
-                    Token = jwtToken
-                }) { StatusCode = 201 };
+                return Ok(jwtToken);
             }
             catch (AuthException exception)
             {
@@ -85,13 +81,9 @@ namespace LocStatsBackendAPI.Controllers
             try
             {
                 var foundUser = await _userService.GetUser(user);
-                var jwtToken = _userService.GenerateJwtToken(foundUser);
+                var jwtToken = await _userService.GenerateJwtToken(foundUser);
 
-                return Ok(new AuthSuccessResponse
-                {
-                    Success = true,
-                    Token = jwtToken
-                });
+                return Ok(jwtToken);
             }
             catch (AuthException exception)
             {
@@ -101,6 +93,38 @@ namespace LocStatsBackendAPI.Controllers
             {
                 return new BadRequestObjectResult(new AuthErrorResponse(exception.Message));
             }
+        }
+
+        [HttpPost]
+        [Route("RefreshToken")]
+        public async Task<IActionResult> RefreshToken([FromBody] TokenRequest tokenRequest)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _userService.VerifyAndGenerateToken(tokenRequest);
+                if (result == null)
+                {
+                    return BadRequest(new AuthResult()
+                    {
+                        Errors = new List<string>()
+                        {
+                            "Invalid tokens"
+                        },
+                        Success = false
+                    });
+                }
+
+                return Ok(result);
+            }
+
+            return BadRequest(new AuthResult()
+            {
+                Errors = new List<string>()
+                {
+                    "Invalid payload"
+                },
+                Success = false
+            });
         }
     }
 }
