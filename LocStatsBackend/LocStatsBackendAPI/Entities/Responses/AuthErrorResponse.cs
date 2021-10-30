@@ -10,6 +10,7 @@ namespace LocStatsBackendAPI.Entities.Responses
         public AuthErrorResponse(string error)
         {
             base.Token = null;
+            base.RefreshToken = null;
             base.Success = false;
             base.Errors = new List<string> { error };
         }
@@ -17,6 +18,7 @@ namespace LocStatsBackendAPI.Entities.Responses
         public AuthErrorResponse(IEnumerable<string> error)
         {
             base.Token = null;
+            base.RefreshToken = null;
             base.Success = false;
             base.Errors = error.ToList();
         }

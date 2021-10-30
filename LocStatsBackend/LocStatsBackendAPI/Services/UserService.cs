@@ -120,10 +120,9 @@ namespace LocStatsBackendAPI.Services
             await Context.RefreshTokens.AddAsync(refreshToken);
             await Context.SaveChangesAsync();
 
-            return new AuthResult()
+            return new AuthSuccessResponse()
             {
                 Token = jwtToken,
-                Success = true,
                 RefreshToken = refreshToken.Token
             };
         }
@@ -146,71 +145,24 @@ namespace LocStatsBackendAPI.Services
                         return null;
                     }
                 }
+
                 var utcExpiryDate = long.Parse(tokenInVerification.Claims
                     .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
 
                 var expiryDate = UnixTimeStampToDateTime(utcExpiryDate);
-
                 if (expiryDate > DateTime.UtcNow.ToLocalTime())
-                {
-                    return new AuthResult()
-                    {
-                        Success = false,
-                        Errors = new List<string>()
-                        {
-                            "Token has not yet expired"
-                        }
-                    };
-                }
-                var storedToken = await Context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == tokenRequest.RefreshToken);
-                if (storedToken == null)
-                {
-                    return new AuthResult()
-                    {
-                        Success = false,
-                        Errors = new List<string>()
-                        {
-                            "Token does not exist"
-                        }
-                    };
-                }
-                if (storedToken.IsUsed)
-                {
-                    return new AuthResult()
-                    {
-                        Success = false,
-                        Errors = new List<string>()
-                        {
-                            "Token has been used"
-                        }
-                    };
-                }
-                if (storedToken.IsRevoked)
-                {
-                    return new AuthResult()
-                    {
-                        Success = false,
-                        Errors = new List<string>()
-                        {
-                            "Token has been revoked"
-                        }
-                    };
-                }
+                    throw new AuthException("JWT token has not expired yet");
+
+                var storedToken =
+                    await Context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == tokenRequest.RefreshToken);
+                if (storedToken == null) throw new AuthException("Refresh token does not exist");
+                if (storedToken.IsUsed) throw new AuthException("Refresh token has been used");
+                if (storedToken.IsRevoked) throw new AuthException("Refresh token has been revoked");
+
                 var jti = tokenInVerification.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti).Value;
-                if (storedToken.JwtId != jti)
-                {
-                    return new AuthResult()
-                    {
-                        Success = false,
-                        Errors = new List<string>()
-                        {
-                            "Token does not match"
-                        }
-                    };
-                }
+                if (storedToken.JwtId != jti) throw new AuthException("Token does not match");
 
                 // update stored token
-
                 storedToken.IsUsed = true;
                 Context.RefreshTokens.Update(storedToken);
                 await Context.SaveChangesAsync();
@@ -219,25 +171,31 @@ namespace LocStatsBackendAPI.Services
                 var dbUser = await UserRepository.GetById(Guid.Parse(storedToken.UserId));
                 return await GenerateJwtToken(dbUser);
             }
-            catch (Exception ex)
+            catch (ArgumentException exception)
             {
-                return null;
+                throw new AuthException("JWT token has wrong format");
+            }
+            catch (SecurityTokenInvalidSignatureException exception)
+            {
+                throw new AuthException("JWT token does not exist");
+            }
+            catch (Exception exception)
+            {
+                throw new AuthException(exception.Message);
             }
         }
 
-
-
-        public DateTime UnixTimeStampToDateTime(long unixTimeStamp)
+        private static DateTime UnixTimeStampToDateTime(long unixTimeStamp)
         {
             var dateTimeVal = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             dateTimeVal = dateTimeVal.AddSeconds(unixTimeStamp).ToLocalTime();
             return dateTimeVal;
         }
 
-        public string RandomString(int length)
+        private static string RandomString(int length)
         {
             var random = new Random();
-            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length).Select(x => x[random.Next(x.Length)]).ToArray());
         }
     }
