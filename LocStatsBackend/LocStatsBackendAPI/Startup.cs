@@ -92,14 +92,16 @@ namespace LocStatsBackendAPI
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+            
 
             // DI Container
             services.AddSingleton(tokenValidationParameters);
 
             services.AddScoped<IUserRepository, UserRepository>();
-
             services.AddScoped<IUserService, UserService>();
 
+            services.AddScoped<IGpsRepository, GpsRepository>();
+            services.AddScoped<IGpsService, GpsService>();
         }
 
         /// <summary>

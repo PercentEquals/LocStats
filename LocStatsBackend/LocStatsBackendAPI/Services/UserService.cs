@@ -99,13 +99,12 @@ namespace LocStatsBackendAPI.Services
                     new Claim(JwtRegisteredClaimNames.Email, user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(1).ToLocalTime(),
+                Expires = DateTime.UtcNow.AddMinutes(4).ToLocalTime(),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
             };
 
             var token = jwtTokenHandler.CreateToken(tokenDescriptor);
             var jwtToken = jwtTokenHandler.WriteToken(token);
-
             var refreshToken = new RefreshToken()
             {
                 JwtId = token.Id,

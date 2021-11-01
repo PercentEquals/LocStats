@@ -9,6 +9,7 @@ namespace LocStatsBackendAPI.Data
     {
         // public virtual DbSet<Model> Table { get; set; }
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+        public virtual DbSet<GpsCoordinate> GpsCoordinates { get; set; } 
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
