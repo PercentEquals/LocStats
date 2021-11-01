@@ -33,7 +33,7 @@ namespace LocStatsBackendAPI.Controllers
         /// </summary>
         /// <param name="user">User to be added</param>
         /// <returns>Registration result</returns>
-        /// <response code="201">Returns registration confirmation along with token</response>
+        /// <response code="201">Returns registration confirmation along with token and refresh token</response>
         /// <response code="400">Bad request</response>
         [HttpPost]
         [Route("Register")]
@@ -47,13 +47,9 @@ namespace LocStatsBackendAPI.Controllers
             try
             {
                 var newUser = await _userService.RegisterUser(user);
-                var jwtToken = _userService.GenerateJwtToken(newUser);
+                var jwtToken = await _userService.GenerateJwtToken(newUser);
 
-                return new JsonResult(new AuthSuccessResponse
-                {
-                    Success = true,
-                    Token = jwtToken
-                }) { StatusCode = 201 };
+                return Ok(jwtToken);
             }
             catch (AuthException exception)
             {
@@ -70,9 +66,9 @@ namespace LocStatsBackendAPI.Controllers
         /// </summary>
         /// <param name="user">User to be logged</param>
         /// <returns>Login result</returns>
-        /// <response code="200">Returns login confirmation along with token</response>
+        /// <response code="200">Returns login confirmation along with token and refresh token</response>
         /// <response code="400">Bad request</response>
-        /// <response code="401">Unathorized</response>
+        /// <response code="401">Unauthorized</response>
         [HttpPost]
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest user)
@@ -85,13 +81,9 @@ namespace LocStatsBackendAPI.Controllers
             try
             {
                 var foundUser = await _userService.GetUser(user);
-                var jwtToken = _userService.GenerateJwtToken(foundUser);
+                var jwtToken = await _userService.GenerateJwtToken(foundUser);
 
-                return Ok(new AuthSuccessResponse
-                {
-                    Success = true,
-                    Token = jwtToken
-                });
+                return Ok(jwtToken);
             }
             catch (AuthException exception)
             {
@@ -100,6 +92,30 @@ namespace LocStatsBackendAPI.Controllers
             catch (Exception exception)
             {
                 return new BadRequestObjectResult(new AuthErrorResponse(exception.Message));
+            }
+        }
+
+        /// <summary>
+        /// Refreshes JWT token using refresh token
+        /// </summary>
+        /// <param name="tokenRequest">Token and refresh token</param>
+        /// <returns>Token refresh result</returns>
+        /// <response code="200">Returns new refresh token and brand new refreshed JWT token</response>
+        /// <response code="400">Bad request</response>
+        [HttpPost]
+        [Route("RefreshToken")]
+        public async Task<IActionResult> RefreshToken([FromBody] TokenRequest tokenRequest)
+        {
+            if (!ModelState.IsValid) return new BadRequestObjectResult(new AuthErrorResponse("Invalid payload"));
+            
+            try
+            {
+                var result = await _userService.VerifyAndGenerateToken(tokenRequest);
+                return Ok(result);
+            }
+            catch (AuthException exception)
+            {
+                return new BadRequestObjectResult(new AuthErrorResponse(exception.Errors));
             }
         }
     }

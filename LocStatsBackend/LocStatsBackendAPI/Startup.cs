@@ -49,6 +49,18 @@ namespace LocStatsBackendAPI
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            var key = Encoding.ASCII.GetBytes(Configuration["JwtConfig:Secret"]);
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                RequireExpirationTime = false
+            };
+
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -56,18 +68,8 @@ namespace LocStatsBackendAPI
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(jwt =>
             {
-                var key = Encoding.ASCII.GetBytes(Configuration["JwtConfig:Secret"]);
-
                 jwt.SaveToken = true;
-                jwt.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    RequireExpirationTime = false
-                };
+                jwt.TokenValidationParameters = tokenValidationParameters;
             });
 
             services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -79,10 +81,10 @@ namespace LocStatsBackendAPI
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo 
-                { 
-                    Title = "LocStatsBackendAPI", 
-                    Version = "v1" 
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "LocStatsBackendAPI",
+                    Version = "v1"
                 });
 
                 // Set the comments path for the Swagger JSON and UI.
@@ -90,11 +92,16 @@ namespace LocStatsBackendAPI
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+            
 
             // DI Container
-            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddSingleton(tokenValidationParameters);
 
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
+
+            services.AddScoped<IGpsRepository, GpsRepository>();
+            services.AddScoped<IGpsService, GpsService>();
         }
 
         /// <summary>
