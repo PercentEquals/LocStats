@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LocStatsBackendAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20211029215921_Added refresh token")]
-    partial class Addedrefreshtoken
+    [Migration("20211101200750_Added refresh token and gps")]
+    partial class Addedrefreshtokenandgps
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,32 @@ namespace LocStatsBackendAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("LocStatsBackendAPI.Entities.Models.GpsCoordinate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
+
+                    b.Property<long>("Timestamp")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("GPSCoordinates");
+                });
 
             modelBuilder.Entity("LocStatsBackendAPI.Entities.Models.RefreshToken", b =>
                 {
@@ -254,6 +280,15 @@ namespace LocStatsBackendAPI.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("LocStatsBackendAPI.Entities.Models.GpsCoordinate", b =>
+                {
+                    b.HasOne("LocStatsBackendAPI.Entities.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("LocStatsBackendAPI.Entities.Models.RefreshToken", b =>
