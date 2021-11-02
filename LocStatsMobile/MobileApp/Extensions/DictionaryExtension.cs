@@ -14,14 +14,20 @@ namespace MobileApp.Extensions
     public static class DictionaryExtension
     {
 
-        public static string ToJsonString(this Dictionary<string, string> dictionary)
+        public static string ToJsonString(this Dictionary<string, string> dictionary, bool valueAsNumber = false)
         {
-            string s = "{";
+            string s = "";
+
+
+            s = "{";
 
             int i = 0;
             foreach (var d in dictionary)
             {
-                s += "\"" + d.Key + "\":\"" + d.Value + "\"";
+                if (!valueAsNumber)
+                    s += "\"" + d.Key + "\":\"" + d.Value + "\"";
+                else
+                    s += "\"" + d.Key + "\":" + d.Value;
 
                 i++;
 
@@ -32,8 +38,7 @@ namespace MobileApp.Extensions
             }
 
             s += "}";
-
-
+            
             return s;
         }
 

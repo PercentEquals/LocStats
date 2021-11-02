@@ -3,6 +3,7 @@ using Android.Views;
 using Android.Widget;
 using System;
 using Android.Gms.Maps;
+using MobileApp.Managers;
 
 namespace MobileApp.Fragments
 {
@@ -43,6 +44,11 @@ namespace MobileApp.Fragments
             //    .Commit();
 
             //mapFrag.GetMapAsync(this);
+
+            View.FindViewById<TextView>(Resource.Id.textViewLoggedAs).Text = ConnectionManager.CurrentUsername;
+
+            
+
         }
 
         public override void OnResume()

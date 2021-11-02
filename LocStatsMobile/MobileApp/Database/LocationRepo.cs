@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Android.Util;
 using Java.Lang;
+using MobileApp.Managers;
 
 namespace MobileApp.Database
 {
@@ -16,6 +17,7 @@ namespace MobileApp.Database
 
         // Just multiply minutesToSave with clearBufferSize and you got time when to send data to the cloud
         private double milisecToSave = 5 * 60 * 1000;
+        //private double milisecToSave = 5 * 60 * 10; //only for testing
         private int bufferSize = 0;
         private int clearBufferSize = 4;
 
@@ -75,10 +77,15 @@ namespace MobileApp.Database
             return me.db.GetNLastRows(clearBufferSize);
         }
 
-        public void OnReachedSize()
+        public async void OnReachedSize()
         {
             //Ready buffer to the cloud
             IEnumerable<LocationModel> bufferLocations = GetBuffer();
+
+            var result = await ConnectionManager.SendGPSData(bufferLocations);
+
+            Log.Info("Server response", result.errorMessage);
+
             foreach (LocationModel loc in bufferLocations)
             {
                 Console.WriteLine(new DateTime(10000 * loc.Timestamp + DateTime.UnixEpoch.Ticks, DateTimeKind.Local).ToString("r"));

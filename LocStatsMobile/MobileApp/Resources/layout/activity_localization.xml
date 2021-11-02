@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,18 +11,26 @@
         android:layout_height="wrap_content"
         android:minWidth="25px"
         android:minHeight="25px"
-        android:layout_marginBottom="50dp"
-        android:id="@+id/textView1" />
+        android:layout_marginBottom="5dp"
+        android:id="@+id/textView5" />
+    <TextView
+        android:text="username"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/textViewLoggedAs"
+        android:layout_marginBottom="15dp"/>
+    
     <Button
         android:id="@+id/request_location_updates_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/request_location_updates" />
     <Button
-      android:id="@+id/remove_location_updates_button"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/remove_location_updates" />
+        android:id="@+id/remove_location_updates_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/remove_location_updates" />
     <FrameLayout
         android:minWidth="25px"
         android:minHeight="25px"

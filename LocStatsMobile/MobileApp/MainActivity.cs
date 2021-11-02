@@ -89,6 +89,8 @@ namespace MobileApp
 
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
             navigation.Visibility = ViewStates.Visible;
+
+            
         }
 
         private void RequestLocationCallback()
@@ -119,6 +121,8 @@ namespace MobileApp
             // Bind to the service. If the service is in foreground mode, this signals to the service
             // that since this activity is in the foreground, the service can exit foreground mode.
             BindService(new Intent(this, typeof(LocationUpdatesService)), _serviceConnection, Bind.AutoCreate);
+
+            
         }
 
         public void RestoreButtonsState()
@@ -175,6 +179,8 @@ namespace MobileApp
 
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
             navigation.Visibility = ViewStates.Visible;
+
+            
         }
 
         private void RegisterFragmentCallback()
