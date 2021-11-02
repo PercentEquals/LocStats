@@ -48,5 +48,10 @@ namespace MobileApp.Database
         {
             db.DeleteAll<LocationModel>();
         }
+
+        public IEnumerable<LocationModel> GetNLastRows(int n)
+        {
+            return db.Query<LocationModel>($"SELECT * FROM Location ORDER BY Timestamp DESC LIMIT {n}");
+        }
     }
 }

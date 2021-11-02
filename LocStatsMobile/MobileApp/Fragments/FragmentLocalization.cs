@@ -6,7 +6,7 @@ using Android.Gms.Maps;
 
 namespace MobileApp.Fragments
 {
-    public class FragmentLocalization : AndroidX.Fragment.App.Fragment, IOnMapReadyCallback
+    public class FragmentLocalization : AndroidX.Fragment.App.Fragment//, IOnMapReadyCallback
     {
         public Button RequestLocationUpdatesButton;
         public Button RemoveLocationUpdatesButton;
@@ -37,12 +37,12 @@ namespace MobileApp.Fragments
         {
             base.OnStart();
 
-            var mapFrag = MapFragment.NewInstance();
-            Activity.FragmentManager.BeginTransaction()
-                .Add(Resource.Id.map_container, mapFrag, "map_fragment")
-                .Commit();
+            //var mapFrag = MapFragment.NewInstance();
+            //Activity.FragmentManager.BeginTransaction()
+            //    .Add(Resource.Id.map_container, mapFrag, "map_fragment")
+            //    .Commit();
 
-            mapFrag.GetMapAsync(this);
+            //mapFrag.GetMapAsync(this);
         }
 
         public override void OnResume()
@@ -53,9 +53,9 @@ namespace MobileApp.Fragments
             RemoveLocationUpdatesButton.Enabled = ((MainActivity)Activity).RemoveLocationUpdatesVal;
         }
 
-        public void OnMapReady(GoogleMap googleMap)
-        {
-            googleMap.MapType = GoogleMap.MapTypeHybrid;
-        }
+        //public void OnMapReady(GoogleMap googleMap)
+        //{
+        //    googleMap.MapType = GoogleMap.MapTypeHybrid;
+        //}
     }
 }

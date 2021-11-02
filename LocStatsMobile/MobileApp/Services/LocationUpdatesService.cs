@@ -47,7 +47,7 @@ namespace MobileApp.Services
 		/**
 	     * The desired interval for location updates. Inexact. Updates may be more or less frequent.
 	     */
-        private const long UpdateIntervalInMilliseconds = 2000;
+        private const long UpdateIntervalInMilliseconds = 4 * 1000;
 
 		/**
 		 * The fastest rate for active location updates. Updates will never be more frequent
@@ -287,21 +287,12 @@ namespace MobileApp.Services
 
 			Location = location;
 
-			LocRepo.AddLocation(Location.Time, Location.Latitude, Location.Longitude);
-
-            if (LocRepo.GetLocationsLength() > 10)
+			if(LocRepo.HasTimePassed(Location.Time))
             {
-                Console.WriteLine("10 Locations:");
-                foreach (LocationModel loc in LocRepo.GetAllLocations())
-				{
-					
-					Console.WriteLine($"{loc.Timestamp}, {loc.Latitude}, {loc.Longitude}");
-                }
-                Console.WriteLine("Deleting All Locations");
-                LocRepo.DeleteAllLocations();
+			    LocRepo.AddLocation(Location.Time, Location.Latitude, Location.Longitude);
             }
 
-            // Notify anyone listening for broadcasts about the new location.
+			// Notify anyone listening for broadcasts about the new location.
 			Intent intent = new Intent(ActionBroadcast);
 			intent.PutExtra(ExtraLocation, location);
 			LocalBroadcastManager.GetInstance(ApplicationContext).SendBroadcast(intent);
