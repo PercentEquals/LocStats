@@ -10,10 +10,12 @@ namespace MobileApp.Fragments
     {
         private TextView _infoText;
         private readonly Action _logInCallback;
+        private readonly Action _registerCallback;
 
-        public FragmentLogIn(Action logInCallback)
+        public FragmentLogIn(Action logInCallback, Action registerCallback)
         {
             this._logInCallback = logInCallback;
+            this._registerCallback = registerCallback;
         }
 
         public override void OnStart()
@@ -22,6 +24,9 @@ namespace MobileApp.Fragments
 
             Button button = View.FindViewById<Button>(Resource.Id.buttonLogIn);
             button.Click += LogInButtonClick;
+
+            button = View.FindViewById<Button>(Resource.Id.buttonRegister);
+            button.Click += RegisterButtonClick;
 
             _infoText = View.FindViewById<TextView>(Resource.Id.infoText);
         }
@@ -32,10 +37,16 @@ namespace MobileApp.Fragments
 
         private void LogInButtonClick(object sender, EventArgs e)
         {
-            EditText editTextEmail = View.FindViewById<EditText>(Resource.Id.editTextEmail);
+            EditText editTextUsername = View.FindViewById<EditText>(Resource.Id.editTextUsername);
             EditText editTextPassword = View.FindViewById<EditText>(Resource.Id.editTextPassword);
-            
-            FormManager.RunForm(editTextEmail.Text, editTextPassword.Text, _logInCallback, _infoText);
+
+            FormManager.RunForm(_logInCallback, _infoText, editTextPassword.Text, editTextUsername.Text,
+                ConnectionManager.LogIn, View.FindViewById<Button>(Resource.Id.buttonLogIn));
+        }
+
+        private void RegisterButtonClick(object sender, EventArgs e)
+        {
+            _registerCallback();
         }
     }
 }

@@ -16,6 +16,7 @@ using Android.Net;
 using Android.Preferences;
 using MobileApp.Services.Sublocation;
 
+
 namespace MobileApp
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
@@ -67,12 +68,29 @@ namespace MobileApp
 
             _fragments = new List<AndroidX.Fragment.App.Fragment>
             {
-                new FragmentLogIn(LogInCallback),
-                new FragmentRegistration(RegisterCallback),
+                new FragmentLogIn(LogInCallback, RegisterFragmentCallback),
+                new FragmentRegistration(RegisterCallback, CancelRegistrationCallback),
                 new FragmentLocalization(RequestLocationCallback, RemoveLocationCallback),
                 new FragmentDataShow()
             };                 
             LoadFragment(0);
+        }
+
+        private void RegisterCallback()
+        {
+            LoadFragment(2);
+
+            Android.App.AlertDialog infoBox = new Android.App.AlertDialog.Builder(this)
+                .SetPositiveButton("Zamknij", (sender, args) =>
+                {})
+                .SetMessage("Rejestracja zakończona sukcesem!")
+                .SetTitle("Rejestracja")
+                .Show();
+
+            BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
+            navigation.Visibility = ViewStates.Visible;
+
+            
         }
 
         private void RequestLocationCallback()
@@ -103,6 +121,8 @@ namespace MobileApp
             // Bind to the service. If the service is in foreground mode, this signals to the service
             // that since this activity is in the foreground, the service can exit foreground mode.
             BindService(new Intent(this, typeof(LocationUpdatesService)), _serviceConnection, Bind.AutoCreate);
+
+            
         }
 
         public void RestoreButtonsState()
@@ -150,11 +170,25 @@ namespace MobileApp
         {
             LoadFragment(2);
 
+            Android.App.AlertDialog infoBox = new Android.App.AlertDialog.Builder(this)
+                .SetPositiveButton("Zamknij", (sender, args) =>
+                { })
+                .SetMessage("Logowanie zakończone sukcesem!")
+                .SetTitle("Logowanie")
+                .Show();
+
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
             navigation.Visibility = ViewStates.Visible;
+
+            
         }
 
-        private void RegisterCallback()
+        private void RegisterFragmentCallback()
+        {
+            LoadFragment(1);
+        }
+
+        private void CancelRegistrationCallback()
         {
             LoadFragment(0);
         }

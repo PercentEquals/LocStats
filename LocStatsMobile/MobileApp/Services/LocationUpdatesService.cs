@@ -1,4 +1,5 @@
-﻿using Android.App;
+﻿using System;
+using Android.App;
 using Android.Content;
 using Android.Gms.Location;
 using Android.Locations;
@@ -7,6 +8,7 @@ using Android.Support.V4.App;
 using Android.Support.V4.Content;
 using Android.Util;
 using Java.Lang;
+using MobileApp.Database;
 using MobileApp.Services.Sublocation;
 
 namespace MobileApp.Services
@@ -45,7 +47,7 @@ namespace MobileApp.Services
 		/**
 	     * The desired interval for location updates. Inexact. Updates may be more or less frequent.
 	     */
-        private const long UpdateIntervalInMilliseconds = 2000;
+        private const long UpdateIntervalInMilliseconds = 4 * 1000;
 
 		/**
 		 * The fastest rate for active location updates. Updates will never be more frequent
@@ -89,10 +91,13 @@ namespace MobileApp.Services
 		 */
 		public Location Location;
 
+        private LocationRepo LocRepo;
+
 		public LocationUpdatesService()
 		{
 			_binder = new LocationUpdatesServiceBinder(this);
-		}
+            LocRepo = new LocationRepo();
+        }
 
         public override void OnCreate()
 		{
@@ -281,6 +286,11 @@ namespace MobileApp.Services
 			Log.Info(Tag, "New location: " + location);
 
 			Location = location;
+
+			if(LocRepo.HasTimePassed(Location.Time))
+            {
+			    LocRepo.AddLocation(Location.Time, Location.Latitude, Location.Longitude);
+            }
 
 			// Notify anyone listening for broadcasts about the new location.
 			Intent intent = new Intent(ActionBroadcast);

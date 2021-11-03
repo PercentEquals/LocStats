@@ -2,10 +2,12 @@
 using Android.Views;
 using Android.Widget;
 using System;
+using Android.Gms.Maps;
+using MobileApp.Managers;
 
 namespace MobileApp.Fragments
 {
-    public class FragmentLocalization : AndroidX.Fragment.App.Fragment
+    public class FragmentLocalization : AndroidX.Fragment.App.Fragment//, IOnMapReadyCallback
     {
         public Button RequestLocationUpdatesButton;
         public Button RemoveLocationUpdatesButton;
@@ -31,7 +33,24 @@ namespace MobileApp.Fragments
             RequestLocationUpdatesButton.Click += delegate { _requestLocationUpdatesCallback(); };
             RemoveLocationUpdatesButton.Click += delegate { _removeLocationUpdatesCallback(); };
         }
-        
+
+        public override void OnStart()
+        {
+            base.OnStart();
+
+            //var mapFrag = MapFragment.NewInstance();
+            //Activity.FragmentManager.BeginTransaction()
+            //    .Add(Resource.Id.map_container, mapFrag, "map_fragment")
+            //    .Commit();
+
+            //mapFrag.GetMapAsync(this);
+
+            View.FindViewById<TextView>(Resource.Id.textViewLoggedAs).Text = ConnectionManager.CurrentUsername;
+
+            
+
+        }
+
         public override void OnResume()
         {
             base.OnResume();
@@ -39,5 +58,10 @@ namespace MobileApp.Fragments
             RequestLocationUpdatesButton.Enabled = ((MainActivity)Activity).RequestLocationUpdatesVal;
             RemoveLocationUpdatesButton.Enabled = ((MainActivity)Activity).RemoveLocationUpdatesVal;
         }
+
+        //public void OnMapReady(GoogleMap googleMap)
+        //{
+        //    googleMap.MapType = GoogleMap.MapTypeHybrid;
+        //}
     }
 }

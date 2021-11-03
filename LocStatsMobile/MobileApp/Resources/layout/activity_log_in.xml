@@ -8,12 +8,18 @@
     <TextView
         android:text="Zaloguj się"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_width="match_parent"
+        android:layout_width="157.5dp"
         android:layout_height="wrap_content"
         android:id="@+id/textView3"
-        android:layout_marginBottom="50dp" />
+        android:layout_marginBottom="15dp"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_gravity="center"
+        android:foregroundGravity="center"
+        android:gravity="center" />
     <TextView
-        android:text="E-mail"
+        android:text="Nazwa użytkownika"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,7 +30,7 @@
         android:layout_height="wrap_content"
         android:minWidth="25px"
         android:minHeight="25px"
-        android:id="@+id/editTextEmail" />
+        android:id="@+id/editTextUsername" />
     <TextView
         android:text="Hasło"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -51,5 +57,16 @@
         android:layout_gravity="center"
         android:visibility="invisible"
         android:gravity="center_horizontal"/>
+
+    <Button
+        android:text="Zarejestruj"
+        android:layout_width="150.5dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonRegister"
+        android:layout_marginRight="0.0dp"
+        android:layout_marginLeft="0.0dp"
+        android:textColor="@android:color/black"
+        android:background="@android:color/background_dark"/>
+   
 
 </LinearLayout>
