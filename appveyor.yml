@@ -16,6 +16,14 @@ install:
 
 before_build:
   - ps: nuget restore $env:solution_name -Verbosity quiet
+  - ps: |
+      if ($env:is_mobile)
+      {
+        $file = 'LocStatsMobile\MobileApp\Managers\ConnectionManager.cs'
+        $regex = '(?<=private const string URL = ")[^"]*'
+        (Get-Content $file) -replace $regex, 'https://locstats.azurewebsites.net/' | Set-Content $file -Encoding UTF8
+        Write-Host (Get-Content $file | Select-String -Pattern $regex)
+      }
 
 build_script:
   - cmd: if %is_mobile% neq true msbuild /p:Configuration=Release %solution_name%
