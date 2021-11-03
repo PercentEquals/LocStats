@@ -15,9 +15,10 @@ install:
   - cmd: if %is_mobile% equ true echo y | "C:\Program Files (x86)\Android\android-sdk\tools\bin\sdkmanager.bat" "platform-tools" "platforms;android-30"
 
 before_build:
+  - ps: Write-Host $env:is_mobile
   - ps: nuget restore $env:solution_name -Verbosity quiet
   - ps: |
-      if ($env:is_mobile)
+      if ($env:is_mobile -eq $true)
       {
         $file = 'LocStatsMobile\MobileApp\Managers\ConnectionManager.cs'
         $regex = '(?<=private const string URL = ")[^"]*'
