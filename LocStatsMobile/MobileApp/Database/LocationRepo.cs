@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Android.Util;
-using Java.Lang;
 using MobileApp.Managers;
 
 namespace MobileApp.Database
@@ -16,7 +15,7 @@ namespace MobileApp.Database
         private long lastTimestamp = 0;
 
         // Just multiply minutesToSave with clearBufferSize and you got time when to send data to the cloud
-        private double milisecToSave = 5 * 60 * 1000;
+        private double milisecToSave = 1 * 60 * 1000;
         //private double milisecToSave = 5 * 60 * 10; //only for testing
         private int bufferSize = 0;
         private int clearBufferSize = 4;
