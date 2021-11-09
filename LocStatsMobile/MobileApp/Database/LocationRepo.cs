@@ -3,14 +3,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Android.Util;
+using MobileApp.Fragments;
 using MobileApp.Managers;
 
 namespace MobileApp.Database
 {
     public class LocationRepo
     {
-        private LocationDatabase db = null;
+        private static LocationRepo instance;
+        private static readonly object padlock = new object();
+        private LocationDatabase db;
         protected static LocationRepo me;
+        private FragmentLocalization fl;
 
         private long lastTimestamp = 0;
 
@@ -30,7 +34,23 @@ namespace MobileApp.Database
             db = new LocationDatabase();
         }
 
-        public void AddLocation(long ts, double lat, double lon)
+        public static LocationRepo Instance
+        {
+            get
+            {
+                lock (padlock)
+                {
+                    return instance ??= new LocationRepo();
+                }
+            }
+        }
+
+        public void SetFragLocal(FragmentLocalization fl)
+        {
+            this.fl = fl;
+        }
+
+        public void AddLocation(long ts, double lat, double lgn)
         {
             Log.Info("Location Repo", "Inserting New Location");
             lastTimestamp = ts;
@@ -39,9 +59,11 @@ namespace MobileApp.Database
             {
                 Timestamp = ts,
                 Latitude = lat,
-                Longitude = lon
+                Longitude = lgn
             };
             me.db.AddLocation(lm);
+
+            //fl?.AddMarker(lat, lgn, ts.ToString());
 
             if (bufferSize == clearBufferSize)
             {

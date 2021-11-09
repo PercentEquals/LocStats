@@ -96,7 +96,7 @@ namespace MobileApp.Services
 		public LocationUpdatesService()
 		{
 			_binder = new LocationUpdatesServiceBinder(this);
-            LocRepo = new LocationRepo();
+            LocRepo = LocationRepo.Instance;
         }
 
         public override void OnCreate()
