@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Android.Util;
@@ -16,12 +15,12 @@ namespace MobileApp.Database
         protected static LocationRepo me;
         private FragmentLocalization fl;
 
-        private long lastTimestamp = 0;
+        private long lastTimestamp;
 
         // Just multiply minutesToSave with clearBufferSize and you got time when to send data to the cloud
         private double milisecToSave = 1 * 60 * 1000;
         //private double milisecToSave = 5 * 60 * 10; //only for testing
-        private int bufferSize = 0;
+        private int bufferSize;
         private int clearBufferSize = 4;
 
         static LocationRepo()

@@ -2,7 +2,6 @@
 using Android.Views;
 using Android.Widget;
 using System;
-using Android.Gms.Maps;
 using MobileApp.Database;
 using MobileApp.Managers;
 
@@ -42,10 +41,10 @@ namespace MobileApp.Fragments
         {
             base.OnStart();
 
-            var mapFrag = MapFragment.NewInstance();
-            Activity.FragmentManager.BeginTransaction()
-                .Add(Resource.Id.map_container, mapFrag, "map_fragment")
-                .Commit();
+            //var mapFrag = MapFragment.NewInstance();
+            //Activity.FragmentManager.BeginTransaction()
+            //    .Add(Resource.Id.map_container, mapFrag, "map_fragment")
+            //    .Commit();
 
             //mapFrag.GetMapAsync(this);
 

@@ -2,7 +2,6 @@
 using Android.Widget;
 using System;
 using System.Threading.Tasks;
-using System.Net.Http;
 
 namespace MobileApp.Managers
 {
@@ -29,7 +28,6 @@ namespace MobileApp.Managers
                     info.Text = response.errorMessage;
                     info.Visibility = ViewStates.Visible;
                 }
-                
             }
             else
             {
@@ -59,7 +57,6 @@ namespace MobileApp.Managers
                     info.Text = response.errorMessage;
                     info.Visibility = ViewStates.Visible;
                 }
-
             }
             else
             {
@@ -67,7 +64,5 @@ namespace MobileApp.Managers
                 info.Visibility = ViewStates.Visible;
             }
         }
-
-        
     }
 }

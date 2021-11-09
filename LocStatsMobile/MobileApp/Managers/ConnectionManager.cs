@@ -1,23 +1,14 @@
-﻿using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
+﻿
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using MobileApp.Extensions;
-using Microsoft.AspNetCore.WebUtilities;
 using MobileApp.Database;
-using Android.Util;
 
 namespace MobileApp.Managers
 {
@@ -43,7 +34,6 @@ namespace MobileApp.Managers
                     { "password", password }
 
                 }.ToJsonString(), "api/Auth/Register", username);
-              
         }
 
         public static async Task<(bool success, string errorMessage)> LogIn (string username, string password)
@@ -61,7 +51,6 @@ namespace MobileApp.Managers
             Dictionary<string, string> locationsDictionary = new Dictionary<string, string>();
 
             string s = "[";
-
             int i = 0;
             foreach(var l in locations)
             {
@@ -72,20 +61,15 @@ namespace MobileApp.Managers
                 locationsDictionary.Add("longtitude", l.Longitude.ToString());
 
                 s += locationsDictionary.ToJsonString(true);
-
                 i++;
 
                 if (i != locations.Count())
                 {
                     s += ",";
                 }
-
             }
-
             s += "]";
-
             return await PostRequest(s, "/api/GPSData/SendMultiple");
-                
         }
 
         private static async Task<(bool success, string errorMessage)> PostRequest (string jsonString, string endpoint, string username)
@@ -93,7 +77,7 @@ namespace MobileApp.Managers
             var httpClientHandler = new HttpClientHandler();
 
             httpClientHandler.ServerCertificateCustomValidationCallback =
-            (message, cert, chain, errors) => { return true; };
+            (message, cert, chain, errors) => true;
 
             using (var client = new HttpClient(httpClientHandler))
             {
@@ -108,19 +92,21 @@ namespace MobileApp.Managers
 
                     var response = await client.PostAsync(endpoint, content);
 
-
-                    if (response != null)
+                    if (response == null)
                     {
-                        var responeJsonString = await response.Content.ReadAsStringAsync();
+                        return (false, "No response from server");
+                    }
 
-                        dynamic responseJson = JsonConvert.DeserializeObject(responeJsonString);
+                    var responeJsonString = await response.Content.ReadAsStringAsync();
 
-                        if (response.IsSuccessStatusCode)
-                        {
-                            _currentToken = responseJson.token.ToString();
-                            _currentRefreshToken = responseJson.refreshToken.ToString();
+                    dynamic responseJson = JsonConvert.DeserializeObject(responeJsonString);
 
-                            /*
+                    if (response.IsSuccessStatusCode)
+                    {
+                        _currentToken = responseJson.token.ToString();
+                        _currentRefreshToken = responseJson.refreshToken.ToString();
+
+                        /*
                             byte[] data = Encoding.UTF8.GetBytes(responseJson.refreshToken.ToString());
                             string b64 = Convert.ToBase64String(data);
                             
@@ -128,21 +114,10 @@ namespace MobileApp.Managers
                             string decodedRefreshToken = Encoding.UTF8.GetString(byteToken);
                             */
 
-
-                            CurrentUsername = username;
-
-                            return (true, "");
-                        }
-                        else
-                        {
-                            return (false, responseJson.errors.ToString().Trim(new char[] { ']', '[', '\n' }));
-                        }
-
+                        CurrentUsername = username;
+                        return (true, "");
                     }
-                    else
-                    {
-                        return (false, "No response from server");
-                    }
+                    return (false, responseJson.errors.ToString().Trim(new char[] { ']', '[', '\n' }));
                 }
                 catch (HttpRequestException e)
                 {
@@ -167,17 +142,12 @@ namespace MobileApp.Managers
                 try
                 {
                     client.BaseAddress = new Uri(URL);
-
                     var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
                     content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _currentToken);
 
                     client.Timeout = TimeSpan.FromMilliseconds(30000);
-
-
-
                     var response = await client.PostAsync(endpoint, content);
-
 
                     if (response != null)
                     {
@@ -189,46 +159,31 @@ namespace MobileApp.Managers
                         {
                             return (true, "success!");
                         }
-                        else
+
+                        if (response.StatusCode != System.Net.HttpStatusCode.Unauthorized || _authorizationAttempt)
                         {
-                            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized && !_authorizationAttempt)
-                            {
-                                var refreshTokensResult = await PostRequestRefreshToken(new Dictionary<string, string>()
-                                {
-                                    { "token", _currentToken },
-                                    { "refreshToken", _currentRefreshToken }
-                                }.ToJsonString(), "/api/Auth/RefreshToken");
-
-                                if (refreshTokensResult.success)
-                                {
-                                    _currentToken = responseJson.token.ToString();
-                                    _currentRefreshToken = responseJson.refreshToken.ToString();
-
-                                    _authorizationAttempt = true;
-
-                                    return await PostRequest(jsonString, endpoint);
-                                }
-                                else
-                                {
-                                    _authorizationAttempt = false;
-
-                                    return (false, refreshTokensResult.error);
-
-                                }
-
-                            }
-                            else
-                            {
-                                return (false, responseJson.errors.ToString().Trim(new char[] { ']', '[', '\n' }));
-                            }
-                            
+                            return (false, responseJson.errors.ToString().Trim(new char[] {']', '[', '\n'}));
                         }
 
+                        var refreshTokensResult = await PostRequestRefreshToken(new Dictionary<string, string>()
+                        {
+                            { "token", _currentToken },
+                            { "refreshToken", _currentRefreshToken }
+                        }.ToJsonString(), "/api/Auth/RefreshToken");
+
+                        if (refreshTokensResult.success)
+                        {
+                            _currentToken = responseJson.token.ToString();
+                            _currentRefreshToken = responseJson.refreshToken.ToString();
+
+                            _authorizationAttempt = true;
+                            return await PostRequest(jsonString, endpoint);
+                        }
+
+                        _authorizationAttempt = false;
+                        return (false, refreshTokensResult.error);
                     }
-                    else
-                    {
-                        return (false, "No response from server");
-                    }
+                    return (false, "No response from server");
                 }
                 catch (HttpRequestException e)
                 {
@@ -247,14 +202,13 @@ namespace MobileApp.Managers
             var httpClientHandler = new HttpClientHandler();
 
             httpClientHandler.ServerCertificateCustomValidationCallback =
-            (message, cert, chain, errors) => { return true; };
+            (message, cert, chain, errors) => true;
 
             using (var client = new HttpClient(httpClientHandler))
             {
                 try
                 {
                     client.BaseAddress = new Uri(URL);
-
                     var content = new StringContent(jsonString, Encoding.UTF8, "application/json");
                     content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
@@ -262,28 +216,19 @@ namespace MobileApp.Managers
 
                     var response = await client.PostAsync(endpoint, content);
 
-
-                    if (response != null)
-                    {
-                        var responeJsonString = await response.Content.ReadAsStringAsync();
-
-                        dynamic responseJson = JsonConvert.DeserializeObject(responeJsonString);
-
-                        if (response.IsSuccessStatusCode)
-                        {
-                           
-                            return (true, responseJson.token.ToString(), responseJson.refreshToken.ToString(), "Success");
-                        }
-                        else
-                        {
-                            return (false, null, null, responseJson.errors.ToString().Trim(new char[] { ']', '[', '\n' }));
-                        }
-
-                    }
-                    else
+                    if (response == null)
                     {
                         return (false, null, null, "No response from server");
                     }
+
+                    var responseJsonString = await response.Content.ReadAsStringAsync();
+                    dynamic responseJson = JsonConvert.DeserializeObject(responseJsonString);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return (true, responseJson.token.ToString(), responseJson.refreshToken.ToString(), "Success");
+                    }
+                    return (false, null, null, responseJson.errors.ToString().Trim(new char[] { ']', '[', '\n' }));
                 }
                 catch (HttpRequestException e)
                 {

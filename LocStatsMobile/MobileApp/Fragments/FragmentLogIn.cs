@@ -14,8 +14,8 @@ namespace MobileApp.Fragments
 
         public FragmentLogIn(Action logInCallback, Action registerCallback)
         {
-            this._logInCallback = logInCallback;
-            this._registerCallback = registerCallback;
+            _logInCallback = logInCallback;
+            _registerCallback = registerCallback;
         }
 
         public override void OnStart()
