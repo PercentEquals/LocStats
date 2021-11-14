@@ -17,7 +17,7 @@ namespace LocStatsBackendAPI.Tests
             Assert.Equal(date.Hour, TimeHelper.UnixTimeStampToDateTime(date_unix).Hour);
             Assert.Equal(date.Minute, TimeHelper.UnixTimeStampToDateTime(date_unix).Minute);
 
-            Assert.Equal(date_now_unix, date_unix);
+            Assert.True(Math.Abs(date_now_unix - date_unix) <= 2);
         }
     }
 }
