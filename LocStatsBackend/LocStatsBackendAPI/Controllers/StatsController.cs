@@ -59,7 +59,7 @@ namespace LocStatsBackendAPI.Controllers
             {
                 response.Add(new StatsResponse
                 {
-                    Date = from.Date.ToShortDateString(),
+                    Date = from.Date.ToString("yyyy-MM-dd"),
                     Value = time.ContainsKey(from.Date) ? time[from.Date] : 0
                 });
 
@@ -96,7 +96,7 @@ namespace LocStatsBackendAPI.Controllers
             {
                 response.Add(new StatsResponse
                 {
-                    Date = from.Date.ToShortDateString(),
+                    Date = from.Date.ToString("yyyy-MM-dd"),
                     Value = distance.ContainsKey(from.Date) ? distance[from.Date] : 0
                 });
 
