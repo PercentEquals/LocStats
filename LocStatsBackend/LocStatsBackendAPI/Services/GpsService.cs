@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LocStatsBackendAPI.Data;
+using LocStatsBackendAPI.Entities.Helpers;
 using LocStatsBackendAPI.Entities.Models;
 using LocStatsBackendAPI.Entities.Repositories.IRepositories;
 using LocStatsBackendAPI.Entities.Requests;
@@ -35,6 +37,14 @@ namespace LocStatsBackendAPI.Services
             await Context.SaveChangesAsync();
             
             return gpsCoordinate;
+        }
+
+        public async Task<List<GpsCoordinate>> GetCoordinatesFrom(DateTime date, string userId)
+        {
+            var start = TimeHelper.DateTimeToUnixTimeStamp(date);
+            var end = TimeHelper.DateTimeToUnixTimeStamp(date.AddDays(1));
+
+            return await Context.GpsCoordinates.Where(x => x.UserId == userId && x.Timestamp >= start && x.Timestamp <= end).ToListAsync();
         }
 
         public async Task<bool> CheckIfExists(GpsRequest gpsRequest, string userId)

@@ -19,7 +19,7 @@ namespace LocStatsBackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class GPSDataController : ControllerBase
     {
         private readonly IGpsService _gpsService;
@@ -78,6 +78,23 @@ namespace LocStatsBackendAPI.Controllers
             }
 
             return Ok();
+        }
+
+        /// <summary>
+        /// Gets GPS coordinates from specific day
+        /// </summary>
+        /// <param name="date">Date (eq. 2021-11-14)</param>
+        /// <returns>List of GPS coordinates for that day (for user requesting this)</returns>
+        /// <response code="200">Returns GPS coordinates from specific day</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="401">Unauthorised</response>
+        /// <response code="500">Something went wrong</response>
+        [HttpGet]
+        public async Task<IActionResult> GetCoordinatesFromSpecificDay([FromQuery] DateTime date)
+        {
+            var userId = User.Claims.First(i => i.Type == "Id").Value;
+            var list = await _gpsService.GetCoordinatesFrom(date, userId);
+            return Ok(_mapper.Map<GpsCoordinate[], List<GpsResponse>>(list.ToArray()));
         }
     }
 }
