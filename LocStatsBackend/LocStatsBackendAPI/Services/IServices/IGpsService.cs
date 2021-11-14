@@ -10,6 +10,7 @@ namespace LocStatsBackendAPI.Services.IServices
     {
         public Task<GpsCoordinate> AddCoordinates(GpsRequest gpsRequest, string userId);
         public Task<List<GpsCoordinate>> GetCoordinatesFrom(DateTime date, string userId);
+        public Task<List<GpsCoordinate>> GetCoordinatesFrom(DateTime from, DateTime to, string userId);
         public Task<bool> CheckIfExists(GpsRequest gpsRequest, string userId);
     }
 }

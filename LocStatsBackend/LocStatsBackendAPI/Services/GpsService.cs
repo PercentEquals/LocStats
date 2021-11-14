@@ -41,10 +41,17 @@ namespace LocStatsBackendAPI.Services
 
         public async Task<List<GpsCoordinate>> GetCoordinatesFrom(DateTime date, string userId)
         {
-            var start = TimeHelper.DateTimeToUnixTimeStamp(date);
-            var end = TimeHelper.DateTimeToUnixTimeStamp(date.AddDays(1));
+            return await GetCoordinatesFrom(date, date.AddDays(1), userId);
+        }
 
-            return await Context.GpsCoordinates.Where(x => x.UserId == userId && x.Timestamp >= start && x.Timestamp <= end).ToListAsync();
+        public async Task<List<GpsCoordinate>> GetCoordinatesFrom(DateTime from, DateTime to, string userId)
+        {
+            var start = TimeHelper.DateTimeToUnixTimeStamp(from.Date);
+            var end = TimeHelper.DateTimeToUnixTimeStamp(to.Date.AddDays(1));
+
+            return await Context.GpsCoordinates.Where(x => x.UserId == userId && x.Timestamp >= start && x.Timestamp <= end)
+                .OrderBy(x => x.Timestamp)
+                .ToListAsync();
         }
 
         public async Task<bool> CheckIfExists(GpsRequest gpsRequest, string userId)
