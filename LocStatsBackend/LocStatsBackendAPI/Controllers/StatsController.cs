@@ -46,16 +46,16 @@ namespace LocStatsBackendAPI.Controllers
         [Route("Time/{from:datetime}/{to:datetime}")]
         public async Task<IActionResult> GetTimeStats(DateTime from, DateTime to)
         {
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
                 return new BadRequestObjectResult("Invalid payload");
-
+            
             var userId = User.Claims.First(i => i.Type == "Id").Value;
             var coords = await _gpsService.GetCoordinatesFrom(from, to, userId);
             var time = StatsHelper.CalcUsageTime(coords);
 
             var response = new List<StatsResponse>();
 
-            while (from.Date != to.Date)
+            while (from <= to)
             {
                 response.Add(new StatsResponse
                 {
@@ -92,7 +92,7 @@ namespace LocStatsBackendAPI.Controllers
 
             var response = new List<StatsResponse>();
 
-            while (from.Date != to.Date)
+            while (from <= to)
             {
                 response.Add(new StatsResponse
                 {
