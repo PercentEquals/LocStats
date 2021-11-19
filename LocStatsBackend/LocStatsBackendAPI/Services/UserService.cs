@@ -1,5 +1,6 @@
 ﻿using LocStatsBackendAPI.Data;
 using LocStatsBackendAPI.Entities.Exceptions;
+using LocStatsBackendAPI.Entities.Helpers;
 using LocStatsBackendAPI.Entities.Models;
 using LocStatsBackendAPI.Entities.Repositories.IRepositories;
 using LocStatsBackendAPI.Entities.Requests;
@@ -148,7 +149,7 @@ namespace LocStatsBackendAPI.Services
                 var utcExpiryDate = long.Parse(tokenInVerification.Claims
                     .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Exp).Value);
 
-                var expiryDate = UnixTimeStampToDateTime(utcExpiryDate);
+                var expiryDate = TimeHelper.UnixTimeStampToDateTime(utcExpiryDate);
                 if (expiryDate > DateTime.UtcNow.ToLocalTime())
                     throw new AuthException("JWT token has not expired yet");
 
@@ -182,13 +183,6 @@ namespace LocStatsBackendAPI.Services
             {
                 throw new AuthException(exception.Message);
             }
-        }
-
-        private static DateTime UnixTimeStampToDateTime(long unixTimeStamp)
-        {
-            var dateTimeVal = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-            dateTimeVal = dateTimeVal.AddSeconds(unixTimeStamp).ToLocalTime();
-            return dateTimeVal;
         }
 
         private static string RandomString(int length)

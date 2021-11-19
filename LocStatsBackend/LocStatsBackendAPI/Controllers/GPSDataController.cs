@@ -19,13 +19,13 @@ namespace LocStatsBackendAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes =JwtBearerDefaults.AuthenticationScheme)]
-    public class GPSDataController : ControllerBase
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    public class GpsDataController : ControllerBase
     {
         private readonly IGpsService _gpsService;
         private readonly IMapper _mapper;
 
-        public GPSDataController(IGpsService gpsService, IMapper mapper)
+        public GpsDataController(IGpsService gpsService, IMapper mapper)
         {
             _gpsService = gpsService;
             _mapper = mapper;
@@ -38,7 +38,7 @@ namespace LocStatsBackendAPI.Controllers
         /// <returns>Coordinates result</returns>
         /// <response code="200">Returns sent GPS coordinates</response>
         /// <response code="400">Bad request</response>
-        /// <response code="401">Unauthorised</response>
+        /// <response code="401">Unauthorized</response>
         /// <response code="500">Something went wrong</response>
         [HttpPost]
         [Route("Send")]
@@ -56,7 +56,7 @@ namespace LocStatsBackendAPI.Controllers
             
             return Ok(_mapper.Map<GpsResponse>(gpsCoordinate));
         }
-        
+
         /// <summary>
         /// Saves multiple GPS coordinates on the cloud
         /// </summary>
@@ -64,7 +64,7 @@ namespace LocStatsBackendAPI.Controllers
         /// <returns>Coordinates result</returns>
         /// <response code="200">Returns sent GPS coordinates</response>
         /// <response code="400">Bad request</response>
-        /// <response code="401">Unauthorised</response>
+        /// <response code="401">Unauthorized</response>
         /// <response code="500">Something went wrong</response>
         [HttpPost]
         [Route("SendMultiple")]
@@ -78,6 +78,49 @@ namespace LocStatsBackendAPI.Controllers
             }
 
             return Ok();
+        }
+
+        /// <summary>
+        /// Gets GPS coordinates from specific day
+        /// </summary>
+        /// <param name="date">Date (eq. 2021-11-14)</param>
+        /// <returns>List of GPS coordinates for that day (for user requesting this)</returns>
+        /// <response code="200">Returns GPS coordinates from specific day</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">Something went wrong</response>
+        [HttpGet]
+        [Route("{date:datetime}")]
+        public async Task<IActionResult> GetCoordinatesFromSpecificDay(DateTime date)
+        {
+            if (!ModelState.IsValid)
+                return new BadRequestObjectResult("Invalid payload");
+
+            var userId = User.Claims.First(i => i.Type == "Id").Value;
+            var list = await _gpsService.GetCoordinatesFrom(date, userId);
+            return Ok(_mapper.Map<GpsCoordinate[], List<GpsResponse>>(list.ToArray()));
+        }
+
+        /// <summary>
+        /// Gets GPS coordinates from specific range
+        /// </summary>
+        /// <param name="from">Date from (eq. 2021-11-14)</param>
+        /// <param name="to">Date to (eq. 2021-11-14)</param>
+        /// <returns>List of GPS coordinates for that range (for user requesting this)</returns>
+        /// <response code="200">Returns GPS coordinates from specific range</response>
+        /// <response code="400">Bad request</response>
+        /// <response code="401">Unauthorized</response>
+        /// <response code="500">Something went wrong</response>
+        [HttpGet]
+        [Route("{from:datetime}/{to:datetime}")]
+        public async Task<IActionResult> GetCoordinatesFromSpecificDay(DateTime from, DateTime to)
+        {
+            if (!ModelState.IsValid)
+                return new BadRequestObjectResult("Invalid payload");
+
+            var userId = User.Claims.First(i => i.Type == "Id").Value;
+            var list = await _gpsService.GetCoordinatesFrom(from, to, userId);
+            return Ok(_mapper.Map<GpsCoordinate[], List<GpsResponse>>(list.ToArray()));
         }
     }
 }
