@@ -27,7 +27,7 @@ namespace MobileApp.Managers
 
         public static async Task<(bool success, string errorMessage)> Register(string email, string username, string password)
         {
-            return await PostRequest(new Dictionary<string, string>()
+            return await PostRequestLogInRegister(new Dictionary<string, string>()
                 {
                     { "email", email },
                     { "userName", username },
@@ -38,7 +38,7 @@ namespace MobileApp.Managers
 
         public static async Task<(bool success, string errorMessage)> LogIn (string username, string password)
         {
-            return await PostRequest(new Dictionary<string, string>()
+            return await PostRequestLogInRegister(new Dictionary<string, string>()
                 { 
                     { "userName", username },
                     { "password", password }
@@ -69,10 +69,159 @@ namespace MobileApp.Managers
                 }
             }
             s += "]";
-            return await PostRequest(s, "/api/GPSData/SendMultiple");
+            return await PostRequestData(s, "/api/GPSData/SendMultiple");
         }
 
-        private static async Task<(bool success, string errorMessage)> PostRequest (string jsonString, string endpoint, string username)
+        public static async Task<(bool success, Dictionary<string, double> values, string errors)> GetTimeStats(DateTime dateFrom, DateTime dateTo)
+        {
+            var result = await GetRequest("/api/Stats/Time/" + dateFrom.ToString("yyyy'-'MM'-'dd") + "/" + dateTo.ToString("yyyy'-'MM'-'dd"));
+
+            Dictionary<string, double> data = new Dictionary<string, double>();
+
+            try
+            {
+
+                if (result.jsonResponse != null)
+                    foreach (var element in result.jsonResponse)
+                    {
+                        string date = element.date;
+                        int value = element.value;
+                        data.Add(date, value);
+                    }
+
+                return (result.success, data, result.errors);
+
+            }
+            catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        public static async Task<(bool success, Dictionary<string, double> values, string errors)> GetDistanceStats(DateTime dateFrom, DateTime dateTo)
+        {
+            var result = await GetRequest("/api/Stats/Distance/" + dateFrom.ToString("yyyy'-'MM'-'dd") + "/" + dateTo.ToString("yyyy'-'MM'-'dd"));
+
+            Dictionary<string, double> data = new Dictionary<string, double>();
+
+            try
+            {
+
+                if (result.jsonResponse != null)
+                    foreach (var element in result.jsonResponse)
+                    {
+                        string date = element.date;
+                        int value = element.value;
+                        data.Add(date, value);
+                    }
+
+                return (result.success, data, result.errors);
+
+            }
+            catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        public static async Task<(bool success, IEnumerable<LocationModel> locations, string errors)> GetGPSData(DateTime dateFrom, DateTime dateTo)
+        {
+            var result = await GetRequest("/api/GpsData/" + dateFrom.ToString("yyyy'-'MM'-'dd") + "/" + dateTo.ToString("yyyy'-'MM'-'dd"));
+
+            List<LocationModel> locations = new List<LocationModel>();
+
+            try
+            {
+                if (result.jsonResponse != null)
+                    foreach (var element in result.jsonResponse)
+                    {
+                        double latitude = element.latitude;
+                        double longtitude = element.longtitude;
+                        long timestamp = element.timestamp;
+                        locations.Add(new LocationModel
+                        {
+                            Latitude = latitude,
+                            Longitude = longtitude,
+                            Timestamp = timestamp
+                        });
+
+                    }
+
+                return (result.success, locations, result.errors);
+            }
+            catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
+        private static async Task<(bool success, dynamic jsonResponse, string errors)> GetRequest (string endpoint)
+        {
+            var httpClientHandler = new HttpClientHandler();
+
+            httpClientHandler.ServerCertificateCustomValidationCallback =
+            (message, cert, chain, errors) => { return true; };
+
+            using (var client = new HttpClient(httpClientHandler))
+            {
+                try
+                {
+                    client.BaseAddress = new Uri(URL);
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _currentToken);
+
+                    client.Timeout = TimeSpan.FromMilliseconds(30000);
+                    var response = await client.GetAsync(endpoint);
+
+                    if (response != null)
+                    {
+                        var responeJsonString = await response.Content.ReadAsStringAsync();
+
+                        dynamic responseJson = JsonConvert.DeserializeObject(responeJsonString);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            return (true, responseJson,  null);
+                        }
+
+                        if (response.StatusCode != System.Net.HttpStatusCode.Unauthorized || _authorizationAttempt)
+                        {
+                            return (false, null, responseJson.errors.ToString().Trim(new char[] { ']', '[', '\n' }));
+                        }
+
+                        var refreshTokensResult = await PostRequestRefreshToken(new Dictionary<string, string>()
+                        {
+                            { "token", _currentToken },
+                            { "refreshToken", _currentRefreshToken }
+                        }.ToJsonString(), "/api/Auth/RefreshToken");
+
+                        if (refreshTokensResult.success)
+                        {
+                            _currentToken = responseJson.token.ToString();
+                            _currentRefreshToken = responseJson.refreshToken.ToString();
+
+                            _authorizationAttempt = true;
+                            return await GetRequest(endpoint);
+                        }
+
+                        _authorizationAttempt = false;
+                        return (false, null, refreshTokensResult.error);
+                    }
+                    return (false, null, "No response from server");
+                }
+                catch (HttpRequestException e)
+                {
+                    return (false, null, e.Message);
+                }
+                catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException e)
+                {
+                    return (false, null, e.Message);
+                }
+            }
+        }
+
+
+
+        private static async Task<(bool success, string errorMessage)> PostRequestLogInRegister (string jsonString, string endpoint, string username)
         {
             var httpClientHandler = new HttpClientHandler();
 
@@ -106,14 +255,7 @@ namespace MobileApp.Managers
                         _currentToken = responseJson.token.ToString();
                         _currentRefreshToken = responseJson.refreshToken.ToString();
 
-                        /*
-                            byte[] data = Encoding.UTF8.GetBytes(responseJson.refreshToken.ToString());
-                            string b64 = Convert.ToBase64String(data);
-                            
-                            byte[] byteToken = Convert.FromBase64String(b64);
-                            string decodedRefreshToken = Encoding.UTF8.GetString(byteToken);
-                            */
-
+                       
                         CurrentUsername = username;
                         return (true, "");
                     }
@@ -130,7 +272,7 @@ namespace MobileApp.Managers
             }
         }
 
-        private static async Task<(bool success, string errorMessage)> PostRequest(string jsonString, string endpoint)
+        private static async Task<(bool success, string errorMessage)> PostRequestData(string jsonString, string endpoint)
         {
             var httpClientHandler = new HttpClientHandler();
 
@@ -177,7 +319,7 @@ namespace MobileApp.Managers
                             _currentRefreshToken = responseJson.refreshToken.ToString();
 
                             _authorizationAttempt = true;
-                            return await PostRequest(jsonString, endpoint);
+                            return await PostRequestData(jsonString, endpoint);
                         }
 
                         _authorizationAttempt = false;

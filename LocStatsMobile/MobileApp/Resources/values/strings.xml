@@ -1,5 +1,5 @@
 <resources>
-  <string name="app_name">Świetna aplikacja</string>
+  <string name="app_name">LocStats</string>
   <string name="title_localize">Śledź lokalizację</string>
   <string name="title_dashboard">Przeglądaj dane</string>
   <string name="location_updated">Lokalizacja zaktualizowana: %1$s</string>

@@ -70,6 +70,7 @@
     <Compile Include="Database\LocationModel.cs" />
     <Compile Include="Database\LocationDatabase.cs" />
     <Compile Include="Extensions\DictionaryExtension.cs" />
+    <Compile Include="Fragments\DatePickerFragment.cs" />
     <Compile Include="Managers\ConnectionManager.cs" />
     <Compile Include="Services\Sublocation\LocationCallbackImpl.cs" />
     <Compile Include="Services\Sublocation\CustomServiceConnection.cs" />
@@ -127,6 +128,9 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\ic_launcher_round.png" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microcharts">
+      <Version>0.9.5.9</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities">
       <Version>2.2.0</Version>
     </PackageReference>

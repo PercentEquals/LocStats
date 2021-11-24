@@ -8,16 +8,18 @@ namespace MobileApp.Managers
     static class FormManager
     {
         public static async void RunForm(Action callback, TextView info, string password, string username,
-            Func<string, string, string, Task<(bool success, string errorMessage)>> func, Button button, string email = null)
+            Func<string, string, string, Task<(bool success, string errorMessage)>> func, Button button1, Button button2, string email = null)
         {
             string message = "";
             if (ValidationManager.CheckUserInput(ref message, username, password, email))
             {
-                button.Enabled = false;
+                button1.Enabled = false;
+                button2.Enabled = false;
 
                 var response = await func(email, username, password);
 
-                button.Enabled = true;
+                button1.Enabled = true;
+                button2.Enabled = true;
 
                 if (response.success)
                 {
@@ -37,16 +39,18 @@ namespace MobileApp.Managers
         }
 
         public static async void RunForm(Action callback, TextView info, string password, string username,
-            Func<string, string, Task<(bool success, string errorMessage)>> func, Button button, string email = null)
+            Func<string, string, Task<(bool success, string errorMessage)>> func, Button button1, Button button2, string email = null)
         {
             string message = "";
             if (ValidationManager.CheckUserInput(ref message, username, password, email))
             {
-                button.Enabled = false;
+                button1.Enabled = false;
+                button2.Enabled = false;
 
                 var response = await func(username, password);
 
-                button.Enabled = true;
+                button1.Enabled = true;
+                button2.Enabled = true;
 
                 if (response.success)
                 {

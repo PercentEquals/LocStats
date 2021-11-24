@@ -69,7 +69,7 @@ namespace MobileApp
                 new FragmentLogIn(LogInCallback, RegisterFragmentCallback),
                 new FragmentRegistration(RegisterCallback, CancelRegistrationCallback),
                 new FragmentLocalization(RequestLocationCallback, RemoveLocationCallback),
-                new FragmentDataShow()
+                new FragmentDataShow(ShowMessageBox)
             };                 
             LoadFragment(0);
         }
@@ -78,12 +78,7 @@ namespace MobileApp
         {
             LoadFragment(2);
 
-            Android.App.AlertDialog infoBox = new Android.App.AlertDialog.Builder(this)
-                .SetPositiveButton("Zamknij", (sender, args) =>
-                {})
-                .SetMessage("Rejestracja zakończona sukcesem!")
-                .SetTitle("Rejestracja")
-                .Show();
+            ShowMessageBox("Rejestracja", "Rejestracja zakończona sukcesem");
 
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
             navigation.Visibility = ViewStates.Visible;
@@ -164,15 +159,20 @@ namespace MobileApp
         {
             LoadFragment(2);
 
-            Android.App.AlertDialog infoBox = new Android.App.AlertDialog.Builder(this)
-                .SetPositiveButton("Zamknij", (sender, args) =>
-                { })
-                .SetMessage("Logowanie zakończone sukcesem!")
-                .SetTitle("Logowanie")
-                .Show();
+            ShowMessageBox("Logowanie", "Logowanie zakończone sukcesem!");
 
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
             navigation.Visibility = ViewStates.Visible;
+        }
+
+        private void ShowMessageBox(string title, string description)
+        {
+            Android.App.AlertDialog infoBox = new Android.App.AlertDialog.Builder(this)
+                .SetPositiveButton("Zamknij", (sender, args) =>
+                { })
+                .SetMessage(description)
+                .SetTitle(title)
+                .Show();
         }
 
         private void RegisterFragmentCallback()

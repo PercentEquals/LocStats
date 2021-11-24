@@ -46,7 +46,7 @@ namespace MobileApp.Fragments
             EditText editTextUsername = View.FindViewById<EditText>(Resource.Id.editTextUsername);
 
             FormManager.RunForm(_registerCallback, _infoText, editTextPassword.Text, editTextUsername.Text,
-                ConnectionManager.Register, View.FindViewById<Button>(Resource.Id.buttonRegister), editTextEmail.Text);
+                ConnectionManager.Register, View.FindViewById<Button>(Resource.Id.buttonRegister), View.FindViewById<Button>(Resource.Id.buttonCancel), editTextEmail.Text);
         }
     }
 }
