@@ -20,6 +20,7 @@ namespace MobileApp.Database
             pathDB = Path.Combine(folderPath, dbName);
             db = new SQLiteConnection(pathDB);
             db.CreateTable<LocationModel>();
+            db.CreateTable<PolyLinesModel>();
 
             db.TableChanged += ((sender, args) =>
             {
@@ -30,6 +31,7 @@ namespace MobileApp.Database
         ~LocationDatabase()
         {
             db.DropTable<LocationModel>();
+            db.DropTable<PolyLinesModel>();
             db.Close();
         }
 
@@ -38,9 +40,24 @@ namespace MobileApp.Database
             db.Insert(lm);
         }
 
+        public void AddPolyLine(PolyLinesModel plm)
+        {
+            db.Insert(plm);
+        }
+
+        public void AddPolyLines(PolyLinesModel[] plms)
+        {
+            db.InsertAll(plms);
+        }
+
         public IEnumerable<LocationModel> GetAllLocations()
         {
             return db.Table<LocationModel>();
+        }
+
+        public IEnumerable<PolyLinesModel> GetAllPolyLines()
+        {
+            return db.Query<PolyLinesModel>("SELECT * FROM PolyLines ORDER BY Timestamp ASC");
         }
 
         public void DeleteAllLocations()
@@ -48,7 +65,12 @@ namespace MobileApp.Database
             db.DeleteAll<LocationModel>();
         }
 
-        public IEnumerable<LocationModel> GetNLastRows(int n)
+        public void DeleteAllPolyLines()
+        {
+            db.DeleteAll<PolyLinesModel>();
+        }
+
+        public IEnumerable<LocationModel> GetNLastLocations(int n)
         {
             return db.Query<LocationModel>($"SELECT * FROM Location ORDER BY Timestamp DESC LIMIT {n}");
         }

@@ -124,11 +124,11 @@ namespace MobileApp.Managers
             }
         }
 
-        public static async Task<(bool success, IEnumerable<LocationModel> locations, string errors)> GetGPSData(DateTime dateFrom, DateTime dateTo)
+        public static async Task<(bool success, IEnumerable<PolyLinesModel> polyLines, string errors)> GetGPSData(DateTime dateFrom, DateTime dateTo)
         {
             var result = await GetRequest("/api/GpsData/" + dateFrom.ToString("yyyy'-'MM'-'dd") + "/" + dateTo.ToString("yyyy'-'MM'-'dd"));
 
-            List<LocationModel> locations = new List<LocationModel>();
+            List<PolyLinesModel> polyLines = new List<PolyLinesModel>();
 
             try
             {
@@ -136,18 +136,18 @@ namespace MobileApp.Managers
                     foreach (var element in result.jsonResponse)
                     {
                         double latitude = element.latitude;
-                        double longtitude = element.longtitude;
+                        double longitude = element.longitude;
                         long timestamp = element.timestamp;
-                        locations.Add(new LocationModel
+                        polyLines.Add(new PolyLinesModel
                         {
                             Latitude = latitude,
-                            Longitude = longtitude,
+                            Longitude = longitude,
                             Timestamp = timestamp
                         });
 
                     }
 
-                return (result.success, locations, result.errors);
+                return (result.success, polyLines, result.errors);
             }
             catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException e)
             {

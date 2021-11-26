@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using Android.Gms.Maps;
 using Android.Gms.Maps.Model;
+using Android.Util;
 using Java.Util;
 using MobileApp.Database;
 using MobileApp.Managers;
@@ -37,17 +38,6 @@ namespace MobileApp.Fragments
 
         }
 
-        public override void OnSaveInstanceState(Bundle outState)
-        {
-            List<string> latlngs = new List<string>();
-            foreach (LatLng point in polyOptions.Points)
-            {
-                latlngs.Add(point.Latitude + ":" + point.Longitude);
-            }
-            outState.PutStringArrayList("latlngs", latlngs);
-            base.OnSaveInstanceState(outState);
-        }
-
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             return inflater.Inflate(Resource.Layout.activity_localization, container, false);
@@ -60,18 +50,6 @@ namespace MobileApp.Fragments
             RemoveLocationUpdatesButton = View.FindViewById(Resource.Id.remove_location_updates_button) as Button;
             RequestLocationUpdatesButton.Click += delegate { _requestLocationUpdatesCallback(); };
             RemoveLocationUpdatesButton.Click += delegate { _removeLocationUpdatesCallback(); };
-
-            if (savedInstanceState != null)
-            {
-                IList<string> latlngs = savedInstanceState.GetStringArrayList("latlngs");
-                foreach (string latlng in latlngs)
-                {
-                    int divIdx = latlng.IndexOf(":");
-                    double lat = Convert.ToDouble(latlng.Substring(0, divIdx));
-                    double lng = Convert.ToDouble(latlng.Substring(divIdx+1));
-                    polyOptions.Add(new LatLng(lat, lng));
-                }
-            }
         }
 
         public override void OnStart()
@@ -100,10 +78,17 @@ namespace MobileApp.Fragments
 
         public void OnMapReady(GoogleMap map)
         {
-            googleMap = map; 
-            
+            googleMap = map;
+
+            ClearMap();
             InitializeUiSettingsOnMap();
-            googleMap.AddPolyline(polyOptions);
+            polyOptions = new PolylineOptions();
+            
+            IEnumerable<PolyLinesModel> plms = lr?.GetAllPolyLines();
+            foreach (var plm in plms)
+            {
+                AddPolylinePoint(plm.Latitude, plm.Longitude);
+            }
         }
 
         public void AddMarker(double lat, double lgn, string title = "")

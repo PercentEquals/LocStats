@@ -61,9 +61,10 @@ namespace MobileApp.Database
                 Longitude = lgn
             };
             me.db.AddLocation(lm);
+            fl.AddPolylinePoint(lat, lgn);
             Log.Info("Location Repo", "Db size: " + me.GetLocationsLength());
 
-            fl?.AddPolylinePoint(lat, lgn);
+            AddPolyLine(ts, lat, lgn);
 
             if (bufferSize == clearBufferSize)
             {
@@ -73,14 +74,41 @@ namespace MobileApp.Database
             }
         }
 
+        public void AddPolyLine(long ts, double lat, double lgn)
+        {
+            Log.Info("Location Repo", "Inserting New PolyLine");
+            PolyLinesModel plm = new PolyLinesModel
+            {
+                Timestamp = ts,
+                Latitude = lat,
+                Longitude = lgn
+            };
+            me.db.AddPolyLine(plm);
+        }
+
+        public void AddPolyLines(PolyLinesModel[] plms)
+        {
+            me.db.AddPolyLines(plms);
+        }
+
         public IEnumerable<LocationModel> GetAllLocations()
         {
             return me.db.GetAllLocations();
         }
 
+        public IEnumerable<PolyLinesModel> GetAllPolyLines()
+        {
+            return me.db.GetAllPolyLines();
+        }
+
         public void DeleteAllLocations()
         {
             me.db.DeleteAllLocations();
+        }
+
+        public void DeleteAllPolyLines()
+        {
+            me.db.DeleteAllPolyLines();
         }
 
         public int GetLocationsLength()
@@ -96,7 +124,7 @@ namespace MobileApp.Database
 
         public IEnumerable<LocationModel> GetBuffer()
         {
-            return me.db.GetNLastRows(clearBufferSize);
+            return me.db.GetNLastLocations(clearBufferSize);
         }
 
         public async void OnReachedSize()
