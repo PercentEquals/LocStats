@@ -61,11 +61,13 @@ namespace MobileApp.Database
                 Longitude = lgn
             };
             me.db.AddLocation(lm);
+            Log.Info("Location Repo", "Db size: " + me.GetLocationsLength());
 
-            //fl?.AddMarker(lat, lgn, ts.ToString());
+            fl?.AddPolylinePoint(lat, lgn);
 
             if (bufferSize == clearBufferSize)
             {
+                Log.Info("Location Repo", "OnReachedSize event call");
                 OnReachedSize();
                 bufferSize = 0;
             }
@@ -99,8 +101,14 @@ namespace MobileApp.Database
 
         public async void OnReachedSize()
         {
-            //Ready buffer to the cloud
+            // Ready buffer to the cloud
             IEnumerable<LocationModel> bufferLocations = GetBuffer();
+
+            // milliseconds to seconds
+            foreach (LocationModel loc in bufferLocations)
+            {
+                loc.Timestamp /= 1000;
+            }
 
             var result = await ConnectionManager.SendGPSData(bufferLocations);
 

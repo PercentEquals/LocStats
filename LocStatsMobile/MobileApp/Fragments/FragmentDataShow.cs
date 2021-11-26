@@ -5,6 +5,7 @@ using Android.Widget;
 using System;
 using MobileApp.Managers;
 using System.Collections.Generic;
+using Android.Util;
 using Microcharts;
 using Microcharts.Droid;
 using SkiaSharp;
@@ -108,8 +109,14 @@ namespace MobileApp.Fragments
 
                 var resultDistance = await ConnectionManager.GetDistanceStats(selectedDateFrom, selectedDateTo);
 
+                Log.Info("DistanceResult", "Getting time res");
                 if (resultDistance.success)
                 {
+                    Log.Info("DistanceResult", "Show stats");
+                    foreach (var v in resultDistance.values)
+                    {
+                        Log.Info("DistanceResult", v.ToString());
+                    }
                     _showStats(ref distanceChart, resultDistance.values);
                 }
                 else
@@ -119,8 +126,14 @@ namespace MobileApp.Fragments
 
                 var resultTime = await ConnectionManager.GetTimeStats(selectedDateFrom, selectedDateTo);
 
+                Log.Info("TimeResult", "Getting time res");
                 if (resultTime.success)
                 {
+                    Log.Info("TimeResult", "Show stats");
+                    foreach (var v in resultTime.values)
+                    {
+                        Log.Info("TimeResult", v.ToString());
+                    }
                     _showStats(ref timeChart, resultTime.values);
                 }
                 else

@@ -14,9 +14,9 @@ namespace MobileApp.Managers
 {
     public static class ConnectionManager
     {
-        private const string URL = "https://192.168.0.217:45455/"; //download VS extension: Conveyor by Keyoti, paste here address from field 'Remote URL'
+        //private const string URL = "https://192.168.0.217:45455/"; //download VS extension: Conveyor by Keyoti, paste here address from field 'Remote URL'
 
-        //private const string URL = "https://locstats.azurewebsites.net/";
+        private const string URL = "https://locstats.azurewebsites.net/";
 
         private static string _currentToken;
         private static string _currentRefreshToken;
@@ -58,7 +58,7 @@ namespace MobileApp.Managers
 
                 locationsDictionary.Add("timestamp", l.Timestamp.ToString());
                 locationsDictionary.Add("latitude", l.Latitude.ToString());
-                locationsDictionary.Add("longtitude", l.Longitude.ToString());
+                locationsDictionary.Add("longitude", l.Longitude.ToString());
 
                 s += locationsDictionary.ToJsonString(true);
                 i++;
