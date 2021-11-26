@@ -86,7 +86,7 @@ namespace MobileApp.Database
             me.db.AddPolyLine(plm);
         }
 
-        public void AddPolyLines(PolyLinesModel[] plms)
+        public void AddPolyLines(IEnumerable<PolyLinesModel> plms)
         {
             me.db.AddPolyLines(plms);
         }

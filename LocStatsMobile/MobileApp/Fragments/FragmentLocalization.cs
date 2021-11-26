@@ -3,11 +3,9 @@ using Android.Views;
 using Android.Widget;
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
 using Android.Gms.Maps;
 using Android.Gms.Maps.Model;
 using Android.Util;
-using Java.Util;
 using MobileApp.Database;
 using MobileApp.Managers;
 
@@ -15,6 +13,10 @@ namespace MobileApp.Fragments
 {
     public class FragmentLocalization : AndroidX.Fragment.App.Fragment, IOnMapReadyCallback
     {
+        private DateTime selectedDateFrom = DateTime.Now;
+        private DateTime selectedDateTo = DateTime.Now;
+        private Button selectedDateToBtn;
+        private Button selectedDateFromBtn;
         public Button RequestLocationUpdatesButton;
         public Button RemoveLocationUpdatesButton;
         private readonly Action _requestLocationUpdatesCallback;
@@ -56,6 +58,14 @@ namespace MobileApp.Fragments
         {
             base.OnStart();
 
+            selectedDateFromBtn = View.FindViewById<Button>(Resource.Id.buttonSelectDateFrom);
+            selectedDateFromBtn.Click += _buttonClickSelectDateFrom;
+            selectedDateToBtn = View.FindViewById<Button>(Resource.Id.buttonSelectDateTo);
+            selectedDateToBtn.Click += _buttonClickSelectDateTo;
+
+            selectedDateFromBtn.Text = selectedDateFrom.ToString("dd'-'MM'-'yyyy");
+            selectedDateToBtn.Text = selectedDateTo.ToString("dd'-'MM'-'yyyy");
+
             var mapFrag = MapFragment.NewInstance();
             Activity.FragmentManager.BeginTransaction()
                 .Add(Resource.Id.map_container, mapFrag, "map_fragment")
@@ -81,14 +91,15 @@ namespace MobileApp.Fragments
             googleMap = map;
 
             ClearMap();
+            ClearPolyLines();
             InitializeUiSettingsOnMap();
-            polyOptions = new PolylineOptions();
-            
-            IEnumerable<PolyLinesModel> plms = lr?.GetAllPolyLines();
-            foreach (var plm in plms)
-            {
-                AddPolylinePoint(plm.Latitude, plm.Longitude);
-            }
+            LoadPolyLines();
+        }
+
+        private void LoadPolyLinesFromDB()
+        {
+            IEnumerable<PolyLinesModel> plms = lr.GetAllPolyLines();
+            AddPolylinePoints(plms);
         }
 
         public void AddMarker(double lat, double lgn, string title = "")
@@ -109,9 +120,68 @@ namespace MobileApp.Fragments
             googleMap.AddPolyline(polyOptions);
         }
 
+        public void AddPolylinePoints(IEnumerable<PolyLinesModel> plms)
+        {
+            foreach (PolyLinesModel plm in plms)
+            {
+                AddPolylinePoint(plm.Latitude, plm.Longitude);
+            }
+        }
+
+        public void ClearPolyLines()
+        {
+            polyOptions = new PolylineOptions();
+        }
+
         public void ClearMap()
         {
             googleMap.Clear();
+        }
+
+        private void _buttonClickSelectDateFrom(object sender, EventArgs e)
+        {
+            new DatePickerFragment(delegate (DateTime time)
+                {
+                    selectedDateFrom = time;
+                    selectedDateFromBtn.Text = selectedDateFrom.ToString("dd'-'MM'-'yyyy");
+                    LoadPolyLines();
+
+                }, selectedDateFrom)
+                .Show(FragmentManager, DatePickerFragment.TAG);
+        }
+
+        private void _buttonClickSelectDateTo(object sender, EventArgs e)
+        {
+            new DatePickerFragment(delegate (DateTime time)
+                {
+                    selectedDateTo = time;
+                    selectedDateToBtn.Text = selectedDateTo.ToString("dd'-'MM'-'yyyy");
+                    LoadPolyLines();
+
+                }, selectedDateTo)
+                .Show(FragmentManager, DatePickerFragment.TAG);
+        }
+
+        private async void LoadPolyLines()
+        {
+            if (selectedDateFrom <= selectedDateTo)
+            {
+                var GPSresults = await ConnectionManager.GetGPSData(selectedDateFrom, selectedDateTo);
+                if (GPSresults.success)
+                {
+                    lr.DeleteAllPolyLines();
+                    lr.AddPolyLines(GPSresults.polyLines);
+                    AddPolylinePoints(GPSresults.polyLines);
+                }
+                else
+                {
+                    Log.Error("Błąd Polylines response", GPSresults.errors);
+                }
+            }
+            else
+            {
+                Log.Error("Polylines date error", "Dates are not in order");
+            }
         }
     }
 }

@@ -31,6 +31,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/remove_location_updates" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:text="04-12-2021"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonSelectDateFrom"
+            android:layout_margin="5dp"/>
+
+        <Button
+            android:text="07-12-2021"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonSelectDateTo"
+            android:layout_margin="5dp"/>
+    </LinearLayout>
+
     <FrameLayout
         android:minWidth="25px"
         android:minHeight="25px"

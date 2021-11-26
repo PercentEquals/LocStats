@@ -1,7 +1,7 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Android.Util;
 using SQLite;
 
 namespace MobileApp.Database
@@ -45,9 +45,10 @@ namespace MobileApp.Database
             db.Insert(plm);
         }
 
-        public void AddPolyLines(PolyLinesModel[] plms)
+        public void AddPolyLines(IEnumerable<PolyLinesModel> plms)
         {
-            db.InsertAll(plms);
+            int res = db.InsertAll(plms);
+            Log.Info("PolyLines DB", "PolyLines added" + res);
         }
 
         public IEnumerable<LocationModel> GetAllLocations()
@@ -67,7 +68,8 @@ namespace MobileApp.Database
 
         public void DeleteAllPolyLines()
         {
-            db.DeleteAll<PolyLinesModel>();
+            int res = db.DeleteAll<PolyLinesModel>();
+            Log.Info("PolyLines DB", "PolyLines deleted" + res);
         }
 
         public IEnumerable<LocationModel> GetNLastLocations(int n)
