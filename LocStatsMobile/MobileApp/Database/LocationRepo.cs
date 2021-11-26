@@ -61,7 +61,7 @@ namespace MobileApp.Database
                 Longitude = lgn
             };
             me.db.AddLocation(lm);
-            fl.AddPolylinePoint(lat, lgn);
+            fl.AddPolyLinePoint((PolyLinesModel)lm);
             Log.Info("Location Repo", "Db size: " + me.GetLocationsLength());
 
             AddPolyLine(ts, lat, lgn);

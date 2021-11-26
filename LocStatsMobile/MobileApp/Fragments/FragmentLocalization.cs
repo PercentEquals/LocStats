@@ -3,8 +3,10 @@ using Android.Views;
 using Android.Widget;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Android.Gms.Maps;
 using Android.Gms.Maps.Model;
+using Android.Text.Format;
 using Android.Util;
 using MobileApp.Database;
 using MobileApp.Managers;
@@ -21,9 +23,11 @@ namespace MobileApp.Fragments
         public Button RemoveLocationUpdatesButton;
         private readonly Action _requestLocationUpdatesCallback;
         private readonly Action _removeLocationUpdatesCallback;
+        private long lastTimestamp, polyLineTimeOffset = 10 * 60;
         private LocationRepo lr;
         private GoogleMap googleMap;
-        PolylineOptions polyOptions = new PolylineOptions();
+        List<PolylineOptions> polyOptions = new List<PolylineOptions>();
+        List<MarkerOptions> markers = new List<MarkerOptions>();
 
         public FragmentLocalization(Action requestUpdate, Action removeUpdate)
         {
@@ -89,9 +93,8 @@ namespace MobileApp.Fragments
         public void OnMapReady(GoogleMap map)
         {
             googleMap = map;
-
+            
             ClearMap();
-            ClearPolyLines();
             InitializeUiSettingsOnMap();
             LoadPolyLines();
         }
@@ -106,31 +109,60 @@ namespace MobileApp.Fragments
         {
             LatLng markerPosition = new LatLng(lat, lgn);
 
-            var newMarker = new MarkerOptions();
+            MarkerOptions newMarker = new MarkerOptions();
             newMarker.SetPosition(markerPosition)
                 .SetTitle(title);
-            googleMap.AddMarker(newMarker);
+
+            markers.Add(newMarker);
+            foreach (MarkerOptions m in markers)
+            {
+                googleMap.AddMarker(m);
+            }
         }
 
-        public void AddPolylinePoint(double lat, double lgn)
+        public void InsertNextPolyLinePoint(double lat, double lgn)
         {
             LatLng pointPosition = new LatLng(lat, lgn);
             ClearMap();
-            polyOptions.Add(pointPosition);
-            googleMap.AddPolyline(polyOptions);
+            PolylineOptions lastPolyOption = polyOptions[^1];
+            lastPolyOption.Add(pointPosition);
+            foreach (PolylineOptions po in polyOptions)
+            {
+                googleMap.AddPolyline(po);
+            }
+        }
+
+        private string GetText(long timestamp)
+        {
+            DateTime ReadTime = new DateTime(timestamp * 10000000 + DateTime.UnixEpoch.Ticks, DateTimeKind.Local);
+            return ReadTime.ToString("r");
+        }
+
+        public void AddPolyLinePoint(PolyLinesModel plm)
+        {
+            if (plm.Timestamp - lastTimestamp > polyLineTimeOffset)
+            {
+                Log.Info("NewPolyLine", $"{plm.Timestamp}, {lastTimestamp}, {GetText(polyLineTimeOffset)}");
+                polyOptions.Add(new PolylineOptions());
+                lastTimestamp = plm.Timestamp;
+            }
+
+            InsertNextPolyLinePoint(plm.Latitude, plm.Longitude);
+            AddMarker(plm.Latitude, plm.Longitude, GetText(plm.Timestamp));
         }
 
         public void AddPolylinePoints(IEnumerable<PolyLinesModel> plms)
         {
+            polyOptions.Add(new PolylineOptions());
             foreach (PolyLinesModel plm in plms)
             {
-                AddPolylinePoint(plm.Latitude, plm.Longitude);
+                AddPolyLinePoint(plm);
             }
         }
 
         public void ClearPolyLines()
         {
-            polyOptions = new PolylineOptions();
+            polyOptions = new List<PolylineOptions>();
         }
 
         public void ClearMap()
@@ -169,7 +201,10 @@ namespace MobileApp.Fragments
                 var GPSresults = await ConnectionManager.GetGPSData(selectedDateFrom, selectedDateTo);
                 if (GPSresults.success)
                 {
+                    markers = new List<MarkerOptions>();
+                    lastTimestamp = 0;
                     lr.DeleteAllPolyLines();
+                    ClearPolyLines();
                     lr.AddPolyLines(GPSresults.polyLines);
                     AddPolylinePoints(GPSresults.polyLines);
                 }
