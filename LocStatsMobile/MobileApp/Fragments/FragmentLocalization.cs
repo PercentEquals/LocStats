@@ -4,6 +4,7 @@ using Android.Widget;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Resources;
 using Android.Gms.Maps;
 using Android.Gms.Maps.Model;
 using Android.Text.Format;
@@ -12,6 +13,7 @@ using MobileApp.Database;
 using MobileApp.Managers;
 using Xamarin.Essentials;
 using System.Threading.Tasks;
+using Android.Graphics;
 
 namespace MobileApp.Fragments
 {
@@ -125,13 +127,20 @@ namespace MobileApp.Fragments
             AddPolylinePoints(plms);
         }
         
-        public void AddMarker(double lat, double lgn, string title = "")
+        public void AddMarker(double lat, double lgn, string title = "", string snippet = "", bool isMostFrequentLocation = false)
         {
             LatLng markerPosition = new LatLng(lat, lgn);
 
             MarkerOptions newMarker = new MarkerOptions();
-            newMarker.SetPosition(markerPosition)
-                .SetTitle(title);
+
+            newMarker.SetPosition(markerPosition).SetTitle(title);
+
+            if (isMostFrequentLocation)
+            {
+                BitmapDescriptor mflIcon = BitmapDescriptorFactory.FromResource(Resource.Drawable.placeholder);
+                newMarker.SetSnippet(snippet);
+                newMarker.SetIcon(mflIcon);
+            }
 
             markers.Add(newMarker);
             foreach (MarkerOptions m in markers)
@@ -242,6 +251,7 @@ namespace MobileApp.Fragments
         }
         private async void LoadMostFrequentLocation()
         {
+            string snippet = "";
             var mostFrequentLocationResult = await ConnectionManager.GetMostFrequentLocation(selectedDateFrom, selectedDateTo);
             if (!mostFrequentLocationResult.success)
             {
@@ -251,7 +261,7 @@ namespace MobileApp.Fragments
             
             MostFrequentLocationModel mflm = mostFrequentLocationResult.mostFrequentLocation;
             Log.Info("Load Most Frequent Location", $"{mflm.Latitude} : {mflm.Longitude} : {mflm.URL}");
-
+            
             try
             {
                 var placemarks = await Geocoding.GetPlacemarksAsync(mflm.Latitude, mflm.Longitude);
@@ -271,6 +281,12 @@ namespace MobileApp.Fragments
                         $"Thoroughfare:    {placemark.Thoroughfare}\n";
 
                     Console.WriteLine(geocodeAddress);
+                    snippet += placemark.CountryName.Trim() != "" ? $"{placemark.CountryCode} " : "";
+                    snippet += placemark.AdminArea.Trim() != "" ? $"{placemark.AdminArea} " : "";
+                    snippet += placemark.SubAdminArea.Trim() != "" ? $"{placemark.SubAdminArea} " : "";
+                    snippet += placemark.Locality.Trim() != "" ? $"{placemark.Locality} " : "";
+                    snippet += placemark.SubLocality.Trim() != "" ? $"{placemark.SubLocality} " : "";
+                    snippet += placemark.PostalCode.Trim() != "" ? $"{placemark.PostalCode}" : "";
                 }
             }
             catch (FeatureNotSupportedException fnsEx)
@@ -281,7 +297,8 @@ namespace MobileApp.Fragments
             {
                 Console.WriteLine(ex);
             }
-
+            
+            AddMarker(mflm.Latitude, mflm.Longitude, "Most Frequent Location", snippet.Trim(), true);
         }
     }
 }
