@@ -1,5 +1,4 @@
-﻿using SQLite;
-
+﻿
 namespace MobileApp.Database
 {
     public class MostFrequentLocationModel

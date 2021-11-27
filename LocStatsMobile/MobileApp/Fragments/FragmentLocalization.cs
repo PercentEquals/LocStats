@@ -3,17 +3,12 @@ using Android.Views;
 using Android.Widget;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Resources;
 using Android.Gms.Maps;
 using Android.Gms.Maps.Model;
-using Android.Text.Format;
 using Android.Util;
 using MobileApp.Database;
 using MobileApp.Managers;
 using Xamarin.Essentials;
-using System.Threading.Tasks;
-using Android.Graphics;
 
 namespace MobileApp.Fragments
 {
@@ -249,56 +244,28 @@ namespace MobileApp.Fragments
                 Log.Error("Polylines date error", "Dates are not in order");
             }
         }
+
         private async void LoadMostFrequentLocation()
         {
             string snippet = "";
-            var mostFrequentLocationResult = await ConnectionManager.GetMostFrequentLocation(selectedDateFrom, selectedDateTo);
-            if (!mostFrequentLocationResult.success)
+            var revGeo = await ReverseGeocoding.GetReverseGeocodingAsync(selectedDateFrom, selectedDateTo);
+
+            if (revGeo.success)
             {
-                Log.Error("Błąd MostFrequentLocation response", mostFrequentLocationResult.errors);
+                Placemark placemark = revGeo.pm;
+                snippet += placemark.CountryName?.Trim() != "" ? $"{placemark.CountryCode} " : "";
+                snippet += placemark.AdminArea?.Trim() != "" ? $"{placemark.AdminArea} " : "";
+                snippet += placemark.SubAdminArea?.Trim() != "" ? $"{placemark.SubAdminArea} " : "";
+                snippet += placemark.Locality?.Trim() != "" ? $"{placemark.Locality} " : "";
+                snippet += placemark.SubLocality?.Trim() != "" ? $"{placemark.SubLocality} " : "";
+                snippet += placemark.PostalCode?.Trim() != "" ? $"{placemark.PostalCode}" : "";
+            }
+            else if (revGeo.coordinates == null)
+            {
                 return;
             }
             
-            MostFrequentLocationModel mflm = mostFrequentLocationResult.mostFrequentLocation;
-            Log.Info("Load Most Frequent Location", $"{mflm.Latitude} : {mflm.Longitude} : {mflm.URL}");
-            
-            try
-            {
-                var placemarks = await Geocoding.GetPlacemarksAsync(mflm.Latitude, mflm.Longitude);
-                var placemark = placemarks?.FirstOrDefault();
-                if (placemark != null)
-                {
-                    var geocodeAddress =
-                        $"AdminArea:       {placemark.AdminArea}\n" +
-                        $"CountryCode:     {placemark.CountryCode}\n" +
-                        $"CountryName:     {placemark.CountryName}\n" +
-                        $"FeatureName:     {placemark.FeatureName}\n" +
-                        $"Locality:        {placemark.Locality}\n" +
-                        $"PostalCode:      {placemark.PostalCode}\n" +
-                        $"SubAdminArea:    {placemark.SubAdminArea}\n" +
-                        $"SubLocality:     {placemark.SubLocality}\n" +
-                        $"SubThoroughfare: {placemark.SubThoroughfare}\n" +
-                        $"Thoroughfare:    {placemark.Thoroughfare}\n";
-
-                    Console.WriteLine(geocodeAddress);
-                    snippet += placemark.CountryName.Trim() != "" ? $"{placemark.CountryCode} " : "";
-                    snippet += placemark.AdminArea.Trim() != "" ? $"{placemark.AdminArea} " : "";
-                    snippet += placemark.SubAdminArea.Trim() != "" ? $"{placemark.SubAdminArea} " : "";
-                    snippet += placemark.Locality.Trim() != "" ? $"{placemark.Locality} " : "";
-                    snippet += placemark.SubLocality.Trim() != "" ? $"{placemark.SubLocality} " : "";
-                    snippet += placemark.PostalCode.Trim() != "" ? $"{placemark.PostalCode}" : "";
-                }
-            }
-            catch (FeatureNotSupportedException fnsEx)
-            {
-                Console.WriteLine(fnsEx);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-            
-            AddMarker(mflm.Latitude, mflm.Longitude, "Most Frequent Location", snippet.Trim(), true);
+            AddMarker(revGeo.coordinates.Latitude, revGeo.coordinates.Longitude, "Most Frequent Location", snippet.Trim(), true);
         }
     }
 }
