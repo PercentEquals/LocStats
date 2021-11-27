@@ -10,6 +10,8 @@ using Android.Text.Format;
 using Android.Util;
 using MobileApp.Database;
 using MobileApp.Managers;
+using Xamarin.Essentials;
+using System.Threading.Tasks;
 
 namespace MobileApp.Fragments
 {
@@ -97,6 +99,24 @@ namespace MobileApp.Fragments
             ClearMap();
             InitializeUiSettingsOnMap();
             LoadPolyLines();
+            ZoomToCurrentLocation();
+        }
+
+        private async void ZoomToCurrentLocation()
+        {
+            try
+            {
+                var location = await Geolocation.GetLastKnownLocationAsync();
+                if (location != null)
+                {
+                    LatLng locationLatLng = new LatLng(location.Latitude, location.Longitude);
+                    googleMap.AnimateCamera(CameraUpdateFactory.NewLatLngZoom(locationLatLng, 13));
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error("FragmentLocalization", ex.Message);
+            }
         }
 
         private void LoadPolyLinesFromDB()
@@ -144,8 +164,8 @@ namespace MobileApp.Fragments
             {
                 Log.Info("NewPolyLine", $"{plm.Timestamp}, {lastTimestamp}, {GetText(polyLineTimeOffset)}");
                 polyOptions.Add(new PolylineOptions());
-                lastTimestamp = plm.Timestamp;
             }
+            lastTimestamp = plm.Timestamp;
 
             InsertNextPolyLinePoint(plm.Latitude, plm.Longitude);
             AddMarker(plm.Latitude, plm.Longitude, GetText(plm.Timestamp));
@@ -202,6 +222,7 @@ namespace MobileApp.Fragments
                 if (GPSresults.success)
                 {
                     markers = new List<MarkerOptions>();
+                    ClearMap();
                     lastTimestamp = 0;
                     lr.DeleteAllPolyLines();
                     ClearPolyLines();
@@ -222,15 +243,45 @@ namespace MobileApp.Fragments
         private async void LoadMostFrequentLocation()
         {
             var mostFrequentLocationResult = await ConnectionManager.GetMostFrequentLocation(selectedDateFrom, selectedDateTo);
-            if (mostFrequentLocationResult.success)
-            {
-                MostFrequentLocationModel mflm = mostFrequentLocationResult.mostFrequentLocation;
-                Log.Info("Load Most Frequent Location", $"{mflm.Latitude} : {mflm.Longitude} : {mflm.URL}");
-            }
-            else
+            if (!mostFrequentLocationResult.success)
             {
                 Log.Error("Błąd MostFrequentLocation response", mostFrequentLocationResult.errors);
+                return;
             }
+            
+            MostFrequentLocationModel mflm = mostFrequentLocationResult.mostFrequentLocation;
+            Log.Info("Load Most Frequent Location", $"{mflm.Latitude} : {mflm.Longitude} : {mflm.URL}");
+
+            try
+            {
+                var placemarks = await Geocoding.GetPlacemarksAsync(mflm.Latitude, mflm.Longitude);
+                var placemark = placemarks?.FirstOrDefault();
+                if (placemark != null)
+                {
+                    var geocodeAddress =
+                        $"AdminArea:       {placemark.AdminArea}\n" +
+                        $"CountryCode:     {placemark.CountryCode}\n" +
+                        $"CountryName:     {placemark.CountryName}\n" +
+                        $"FeatureName:     {placemark.FeatureName}\n" +
+                        $"Locality:        {placemark.Locality}\n" +
+                        $"PostalCode:      {placemark.PostalCode}\n" +
+                        $"SubAdminArea:    {placemark.SubAdminArea}\n" +
+                        $"SubLocality:     {placemark.SubLocality}\n" +
+                        $"SubThoroughfare: {placemark.SubThoroughfare}\n" +
+                        $"Thoroughfare:    {placemark.Thoroughfare}\n";
+
+                    Console.WriteLine(geocodeAddress);
+                }
+            }
+            catch (FeatureNotSupportedException fnsEx)
+            {
+                Console.WriteLine(fnsEx);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
         }
     }
 }
