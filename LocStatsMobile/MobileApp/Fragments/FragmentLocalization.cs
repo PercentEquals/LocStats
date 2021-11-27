@@ -104,7 +104,7 @@ namespace MobileApp.Fragments
             IEnumerable<PolyLinesModel> plms = lr.GetAllPolyLines();
             AddPolylinePoints(plms);
         }
-
+        
         public void AddMarker(double lat, double lgn, string title = "")
         {
             LatLng markerPosition = new LatLng(lat, lgn);
@@ -207,6 +207,7 @@ namespace MobileApp.Fragments
                     ClearPolyLines();
                     lr.AddPolyLines(GPSresults.polyLines);
                     AddPolylinePoints(GPSresults.polyLines);
+                    LoadMostFrequentLocation();
                 }
                 else
                 {
@@ -216,6 +217,19 @@ namespace MobileApp.Fragments
             else
             {
                 Log.Error("Polylines date error", "Dates are not in order");
+            }
+        }
+        private async void LoadMostFrequentLocation()
+        {
+            var mostFrequentLocationResult = await ConnectionManager.GetMostFrequentLocation(selectedDateFrom, selectedDateTo);
+            if (mostFrequentLocationResult.success)
+            {
+                MostFrequentLocationModel mflm = mostFrequentLocationResult.mostFrequentLocation;
+                Log.Info("Load Most Frequent Location", $"{mflm.Latitude} : {mflm.Longitude} : {mflm.URL}");
+            }
+            else
+            {
+                Log.Error("Błąd MostFrequentLocation response", mostFrequentLocationResult.errors);
             }
         }
     }

@@ -3,10 +3,12 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Android.Util;
 using MobileApp.Extensions;
 using MobileApp.Database;
 
@@ -106,7 +108,6 @@ namespace MobileApp.Managers
 
             try
             {
-
                 if (result.jsonResponse != null)
                     foreach (var element in result.jsonResponse)
                     {
@@ -155,6 +156,33 @@ namespace MobileApp.Managers
             }
         }
 
+
+        public static async Task<(bool success, MostFrequentLocationModel mostFrequentLocation, string errors)> GetMostFrequentLocation(DateTime dateFrom, DateTime dateTo)
+        {
+            var result = await GetRequest("/api/Stats/MostFrequentLocation/" + dateFrom.ToString("yyyy'-'MM'-'dd") + "/" + dateTo.ToString("yyyy'-'MM'-'dd")+"/3");
+            try
+            {
+                MostFrequentLocationModel MostFrequentLocation = new MostFrequentLocationModel();
+                
+                if (result.jsonResponse == null)
+                {
+                    return (result.success, MostFrequentLocation, result.errors);
+                }
+                var response = result.jsonResponse;
+                MostFrequentLocation = new MostFrequentLocationModel
+                {
+                    URL = response.imageUrl,
+                    Latitude = response.latitude,
+                    Longitude = response.longitude
+                };
+                return (result.success, MostFrequentLocation, result.errors);
+            }
+            catch (Microsoft.CSharp.RuntimeBinder.RuntimeBinderException e)
+            {
+                return (false, null, e.Message);
+            }
+        }
+
         private static async Task<(bool success, dynamic jsonResponse, string errors)> GetRequest (string endpoint)
         {
             var httpClientHandler = new HttpClientHandler();
@@ -175,6 +203,11 @@ namespace MobileApp.Managers
                     if (response != null)
                     {
                         var responeJsonString = await response.Content.ReadAsStringAsync();
+
+                        if (response.StatusCode == HttpStatusCode.BadRequest)
+                        {
+                            return (false, null, response.ReasonPhrase);
+                        }
 
                         dynamic responseJson = JsonConvert.DeserializeObject(responeJsonString);
 

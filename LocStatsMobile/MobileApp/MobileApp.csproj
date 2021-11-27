@@ -66,6 +66,7 @@
     <Reference Include="System.Numerics.Vectors" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\MostFrequentLocationModel.cs" />
     <Compile Include="Database\PolyLinesModel.cs" />
     <Compile Include="Database\LocationRepo.cs" />
     <Compile Include="Database\LocationModel.cs" />
