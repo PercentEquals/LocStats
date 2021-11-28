@@ -69,7 +69,8 @@ namespace MobileApp
                 new FragmentLogIn(LogInCallback, RegisterFragmentCallback),
                 new FragmentRegistration(RegisterCallback, CancelRegistrationCallback),
                 new FragmentLocalization(RequestLocationCallback, RemoveLocationCallback),
-                new FragmentDataShow(ShowMessageBox)
+                new FragmentDataShow(ShowMessageBox),
+                new FragmentMostFrequentLocation(ShowMessageBox)
             };                 
             LoadFragment(0);
         }
@@ -195,6 +196,10 @@ namespace MobileApp
 
                 case Resource.Id.navigation_dashboard:
                     LoadFragment(3);
+                    return true;
+
+                case Resource.Id.navigation_location:
+                    LoadFragment(4);
                     return true;
             }
             return false;

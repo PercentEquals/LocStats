@@ -73,7 +73,7 @@ namespace MobileApp.Fragments
             chartView.Chart = new BarChart
             {
                 Entries = chartEntries.ToArray(),
-                LabelTextSize = 50,
+                LabelTextSize = 40,
                 LabelOrientation = Microcharts.Orientation.Vertical,
                 ValueLabelOrientation = Microcharts.Orientation.Vertical,
                 Margin = 30,

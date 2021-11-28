@@ -8,7 +8,7 @@ using Android.Gms.Maps.Model;
 
 namespace MobileApp.Managers
 {
-    class ReverseGeocoding
+    public static class ReverseGeocoding
     {
         public static async Task<(bool success, LatLng coordinates, string url, Placemark pm, string errors)> GetReverseGeocodingAsync(DateTime selectedDateFrom, DateTime selectedDateTo)
         {

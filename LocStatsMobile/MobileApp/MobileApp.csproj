@@ -74,6 +74,7 @@
     <Compile Include="Database\LocationDatabase.cs" />
     <Compile Include="Extensions\DictionaryExtension.cs" />
     <Compile Include="Fragments\DatePickerFragment.cs" />
+    <Compile Include="Fragments\FragmentMostFrequentLocation.cs" />
     <Compile Include="Managers\ConnectionManager.cs" />
     <Compile Include="Managers\ReverseGeocoding.cs" />
     <Compile Include="Services\Sublocation\LocationCallbackImpl.cs" />
@@ -235,6 +236,11 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\location_info.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\activity_most_frequent_location.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
