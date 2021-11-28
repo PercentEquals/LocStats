@@ -72,7 +72,7 @@ namespace LocStatsBackendAPI.Entities.Helpers
                     }
                 }
 
-                stats.Add(item.Key, dist);
+                stats.Add(item.Key, ConvertMilesToMeters(dist));
             }
 
             return stats;
