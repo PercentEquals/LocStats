@@ -111,7 +111,6 @@
     <AndroidResource Include="Resources\values\strings.xml" />
     <AndroidResource Include="Resources\values\styles.xml" />
     <AndroidResource Include="Resources\drawable\ic_home_black_24dp.xml" />
-    <AndroidResource Include="Resources\drawable\ic_dashboard_black_24dp.xml" />
     <AndroidResource Include="Resources\drawable\ic_notifications_black_24dp.xml" />
     <AndroidResource Include="Resources\menu\navigation.xml" />
     <AndroidResource Include="Resources\mipmap-anydpi-v26\ic_launcher.xml" />
@@ -243,6 +242,15 @@
     <AndroidResource Include="Resources\layout\activity_most_frequent_location.xml">
       <SubType>Designer</SubType>
     </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_statistics.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_localize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\ic_info.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

@@ -2,7 +2,7 @@
   <string name="app_name">LocStats</string>
   <string name="title_localize">Śledź lokalizację</string>
   <string name="title_dashboard">Statystyki</string>
-  <string name="title_location">Najczęstsza lokalizacja</string>
+  <string name="title_location">Średnia lokalizacja</string>
   <string name="location_updated">Lokalizacja zaktualizowana: %1$s</string>
   <string name="launch_activity">Uruchom</string>
   <string name="end_service">Zakończ</string>

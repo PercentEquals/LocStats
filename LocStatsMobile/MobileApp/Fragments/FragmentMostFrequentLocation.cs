@@ -133,7 +133,7 @@ namespace MobileApp.Fragments
 
             using (var webClient = new WebClient())
             {
-
+                webClient.Headers.Add("User-Agent: Other");
                 try
                 {
                     var imageBytes = webClient.DownloadData(url);
