@@ -22,7 +22,7 @@ namespace MobileApp.Managers
         private static string _currentToken;
         private static string _currentRefreshToken;
 
-        private static bool _authorizationAttempt = false;
+        private static bool _authorizationAttempt;
 
         public static string CurrentUsername { get; private set; }
 
@@ -215,9 +215,9 @@ namespace MobileApp.Managers
                             return (true, responseJson,  null);
                         }
 
-                        if (response.StatusCode != System.Net.HttpStatusCode.Unauthorized || _authorizationAttempt)
+                        if (response.StatusCode != HttpStatusCode.Unauthorized || _authorizationAttempt)
                         {
-                            return (false, null, responseJson.errors.ToString().Trim(new char[] { ']', '[', '\n' }));
+                            return (false, null, responseJson.errors.ToString().Trim(new[] { ']', '[', '\n' }));
                         }
 
                         var refreshTokensResult = await PostRequestRefreshToken(new Dictionary<string, string>()
@@ -291,7 +291,7 @@ namespace MobileApp.Managers
                         CurrentUsername = username;
                         return (true, "");
                     }
-                    return (false, responseJson.errors.ToString().Trim(new char[] { ']', '[', '\n' }));
+                    return (false, responseJson.errors.ToString().Trim(new[] { ']', '[', '\n' }));
                 }
                 catch (HttpRequestException e)
                 {
@@ -334,9 +334,9 @@ namespace MobileApp.Managers
                             return (true, "success!");
                         }
 
-                        if (response.StatusCode != System.Net.HttpStatusCode.Unauthorized || _authorizationAttempt)
+                        if (response.StatusCode != HttpStatusCode.Unauthorized || _authorizationAttempt)
                         {
-                            return (false, responseJson.errors.ToString().Trim(new char[] {']', '[', '\n'}));
+                            return (false, responseJson.errors.ToString().Trim(new[] {']', '[', '\n'}));
                         }
 
                         var refreshTokensResult = await PostRequestRefreshToken(new Dictionary<string, string>()
@@ -402,7 +402,7 @@ namespace MobileApp.Managers
                     {
                         return (true, responseJson.token.ToString(), responseJson.refreshToken.ToString(), "Success");
                     }
-                    return (false, null, null, responseJson.errors.ToString().Trim(new char[] { ']', '[', '\n' }));
+                    return (false, null, null, responseJson.errors.ToString().Trim(new[] { ']', '[', '\n' }));
                 }
                 catch (HttpRequestException e)
                 {

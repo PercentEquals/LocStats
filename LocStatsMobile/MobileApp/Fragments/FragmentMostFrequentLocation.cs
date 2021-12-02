@@ -1,25 +1,16 @@
-﻿using Android.App;
-using Android.Content;
-using Android.Graphics;
+﻿using Android.Graphics;
 using Android.OS;
-using Android.Runtime;
-using Android.Util;
 using Android.Views;
 using Android.Widget;
 using MobileApp.Managers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using Xamarin.Essentials;
 
 namespace MobileApp.Fragments
 {
     public class FragmentMostFrequentLocation : AndroidX.Fragment.App.Fragment
     {
-
-        private DateTime selectedDateFrom = DateTime.Now.AddDays(-7);
+        private DateTime selectedDateFrom = DateTime.Now;
         private DateTime selectedDateTo = DateTime.Now;
 
         private Button selectedDateToBtn;
@@ -30,13 +21,6 @@ namespace MobileApp.Fragments
         public FragmentMostFrequentLocation(Action<string, string> infoBoxCallback)
         {
             this.infoBoxCallback = infoBoxCallback;
-        }
-
-        public override void OnCreate(Bundle savedInstanceState)
-        {
-            base.OnCreate(savedInstanceState);
-
-            // Create your fragment here
         }
 
         public override void OnStart()
@@ -91,7 +75,6 @@ namespace MobileApp.Fragments
         {
             if (selectedDateFrom <= selectedDateTo)
             {
-
                 var revGeo = await ReverseGeocoding.GetReverseGeocodingAsync(selectedDateFrom, selectedDateTo);
 
                 if (revGeo.success)
@@ -123,8 +106,6 @@ namespace MobileApp.Fragments
                 View.FindViewById<TextView>(Resource.Id.textInfoLocation).Text = "";
                 View.FindViewById<ImageView>(Resource.Id.imageView).SetImageBitmap(null);
             }
-
-           
         }
 
         private Bitmap GetImageBitmapFromUrl(string url)
@@ -147,7 +128,6 @@ namespace MobileApp.Fragments
                     infoBoxCallback("Błąd", e.Message);
                 }
             }
-
             return imageBitmap;
         }
     }

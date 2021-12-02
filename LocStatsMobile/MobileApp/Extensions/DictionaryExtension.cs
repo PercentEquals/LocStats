@@ -6,8 +6,7 @@ namespace MobileApp.Extensions
     {
         public static string ToJsonString(this Dictionary<string, string> dictionary, bool valueAsNumber = false)
         {
-            string s = "";
-            s = "{";
+            string s = "{";
             int i = 0;
 
             foreach (var d in dictionary)

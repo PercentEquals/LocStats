@@ -10,15 +10,13 @@ namespace MobileApp.Database
     {
         private string dbName = "Location.db3";
         private Environment.SpecialFolder specialFolder = Environment.SpecialFolder.ApplicationData;
-        private string folderPath;
-        private string pathDB;
         private SQLiteConnection db;
 
         public LocationDatabase()
         {
-            folderPath = Environment.GetFolderPath(specialFolder);
-            pathDB = Path.Combine(folderPath, dbName);
-            db = new SQLiteConnection(pathDB);
+            var folderPath = Environment.GetFolderPath(specialFolder);
+            var pathDb = Path.Combine(folderPath, dbName);
+            db = new SQLiteConnection(pathDb);
             db.CreateTable<LocationModel>();
             db.CreateTable<PolyLinesModel>();
 

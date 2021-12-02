@@ -95,11 +95,6 @@ namespace MobileApp.Database
             me.db.AddPolyLines(plms);
         }
 
-        public IEnumerable<LocationModel> GetAllLocations()
-        {
-            return me.db.GetAllLocations();
-        }
-
         public IEnumerable<PolyLinesModel> GetAllPolyLines()
         {
             return me.db.GetAllPolyLines();

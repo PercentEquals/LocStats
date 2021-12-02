@@ -115,12 +115,6 @@ namespace MobileApp.Fragments
                 Log.Error("FragmentLocalization", ex.Message);
             }
         }
-
-        private void LoadPolyLinesFromDB()
-        {
-            IEnumerable<PolyLinesModel> plms = lr.GetAllPolyLines();
-            AddPolylinePoints(plms);
-        }
         
         public void AddMarker(double lat, double lgn, string title = "", string snippet = "", bool isMostFrequentLocation = false)
         {
