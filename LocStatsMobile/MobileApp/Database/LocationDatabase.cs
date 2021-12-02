@@ -1,8 +1,7 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using Android.Util;
 using SQLite;
 
 namespace MobileApp.Database
@@ -11,16 +10,15 @@ namespace MobileApp.Database
     {
         private string dbName = "Location.db3";
         private Environment.SpecialFolder specialFolder = Environment.SpecialFolder.ApplicationData;
-        private string folderPath;
-        private string pathDB;
         private SQLiteConnection db;
 
         public LocationDatabase()
         {
-            folderPath = Environment.GetFolderPath(specialFolder);
-            pathDB = Path.Combine(folderPath, dbName);
-            db = new SQLiteConnection(pathDB);
+            var folderPath = Environment.GetFolderPath(specialFolder);
+            var pathDb = Path.Combine(folderPath, dbName);
+            db = new SQLiteConnection(pathDb);
             db.CreateTable<LocationModel>();
+            db.CreateTable<PolyLinesModel>();
 
             db.TableChanged += ((sender, args) =>
             {
@@ -31,6 +29,7 @@ namespace MobileApp.Database
         ~LocationDatabase()
         {
             db.DropTable<LocationModel>();
+            db.DropTable<PolyLinesModel>();
             db.Close();
         }
 
@@ -39,9 +38,25 @@ namespace MobileApp.Database
             db.Insert(lm);
         }
 
+        public void AddPolyLine(PolyLinesModel plm)
+        {
+            db.Insert(plm);
+        }
+
+        public void AddPolyLines(IEnumerable<PolyLinesModel> plms)
+        {
+            int res = db.InsertAll(plms);
+            Log.Info("PolyLines DB", "PolyLines added" + res);
+        }
+
         public IEnumerable<LocationModel> GetAllLocations()
         {
             return db.Table<LocationModel>();
+        }
+
+        public IEnumerable<PolyLinesModel> GetAllPolyLines()
+        {
+            return db.Query<PolyLinesModel>("SELECT * FROM PolyLines ORDER BY Timestamp ASC");
         }
 
         public void DeleteAllLocations()
@@ -49,7 +64,13 @@ namespace MobileApp.Database
             db.DeleteAll<LocationModel>();
         }
 
-        public IEnumerable<LocationModel> GetNLastRows(int n)
+        public void DeleteAllPolyLines()
+        {
+            int res = db.DeleteAll<PolyLinesModel>();
+            Log.Info("PolyLines DB", "PolyLines deleted" + res);
+        }
+
+        public IEnumerable<LocationModel> GetNLastLocations(int n)
         {
             return db.Query<LocationModel>($"SELECT * FROM Location ORDER BY Timestamp DESC LIMIT {n}");
         }

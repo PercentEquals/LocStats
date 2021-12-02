@@ -35,8 +35,6 @@ namespace MobileApp.Managers
                 message = "Niepoprawne hasło";
                 return false;
             }
-
-
             return true;
         }
 

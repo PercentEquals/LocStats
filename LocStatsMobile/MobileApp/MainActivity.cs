@@ -16,7 +16,6 @@ using Android.Net;
 using Android.Preferences;
 using MobileApp.Services.Sublocation;
 
-
 namespace MobileApp
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", MainLauncher = true)]
@@ -61,7 +60,6 @@ namespace MobileApp
                     RequestPermissions();
                 }
             }
-
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
             navigation.SetOnNavigationItemSelectedListener(this);
             navigation.Visibility = ViewStates.Gone;
@@ -71,7 +69,8 @@ namespace MobileApp
                 new FragmentLogIn(LogInCallback, RegisterFragmentCallback),
                 new FragmentRegistration(RegisterCallback, CancelRegistrationCallback),
                 new FragmentLocalization(RequestLocationCallback, RemoveLocationCallback),
-                new FragmentDataShow()
+                new FragmentDataShow(ShowMessageBox),
+                new FragmentMostFrequentLocation(ShowMessageBox)
             };                 
             LoadFragment(0);
         }
@@ -80,17 +79,10 @@ namespace MobileApp
         {
             LoadFragment(2);
 
-            Android.App.AlertDialog infoBox = new Android.App.AlertDialog.Builder(this)
-                .SetPositiveButton("Zamknij", (sender, args) =>
-                {})
-                .SetMessage("Rejestracja zakończona sukcesem!")
-                .SetTitle("Rejestracja")
-                .Show();
+            ShowMessageBox("Rejestracja", "Rejestracja zakończona sukcesem");
 
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
             navigation.Visibility = ViewStates.Visible;
-
-            
         }
 
         private void RequestLocationCallback()
@@ -121,8 +113,6 @@ namespace MobileApp
             // Bind to the service. If the service is in foreground mode, this signals to the service
             // that since this activity is in the foreground, the service can exit foreground mode.
             BindService(new Intent(this, typeof(LocationUpdatesService)), _serviceConnection, Bind.AutoCreate);
-
-            
         }
 
         public void RestoreButtonsState()
@@ -170,17 +160,20 @@ namespace MobileApp
         {
             LoadFragment(2);
 
-            Android.App.AlertDialog infoBox = new Android.App.AlertDialog.Builder(this)
-                .SetPositiveButton("Zamknij", (sender, args) =>
-                { })
-                .SetMessage("Logowanie zakończone sukcesem!")
-                .SetTitle("Logowanie")
-                .Show();
+            ShowMessageBox("Logowanie", "Logowanie zakończone sukcesem!");
 
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
             navigation.Visibility = ViewStates.Visible;
+        }
 
-            
+        private void ShowMessageBox(string title, string description)
+        {
+            Android.App.AlertDialog infoBox = new Android.App.AlertDialog.Builder(this)
+                .SetPositiveButton("Zamknij", (sender, args) =>
+                { })
+                .SetMessage(description)
+                .SetTitle(title)
+                .Show();
         }
 
         private void RegisterFragmentCallback()
@@ -203,6 +196,10 @@ namespace MobileApp
 
                 case Resource.Id.navigation_dashboard:
                     LoadFragment(3);
+                    return true;
+
+                case Resource.Id.navigation_location:
+                    LoadFragment(4);
                     return true;
             }
             return false;

@@ -1,24 +1,26 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Android.Util;
-using Java.Lang;
+using MobileApp.Fragments;
 using MobileApp.Managers;
 
 namespace MobileApp.Database
 {
     public class LocationRepo
     {
-        private LocationDatabase db = null;
+        private static LocationRepo instance;
+        private static readonly object padlock = new object();
+        private LocationDatabase db;
         protected static LocationRepo me;
+        private FragmentLocalization fl;
 
-        private long lastTimestamp = 0;
+        private long lastTimestamp;
 
         // Just multiply minutesToSave with clearBufferSize and you got time when to send data to the cloud
-        private double milisecToSave = 5 * 60 * 1000;
+        private double milisecToSave = 1 * 60 * 1000;
         //private double milisecToSave = 5 * 60 * 10; //only for testing
-        private int bufferSize = 0;
+        private int bufferSize;
         private int clearBufferSize = 4;
 
         static LocationRepo()
@@ -31,7 +33,23 @@ namespace MobileApp.Database
             db = new LocationDatabase();
         }
 
-        public void AddLocation(long ts, double lat, double lon)
+        public static LocationRepo Instance
+        {
+            get
+            {
+                lock (padlock)
+                {
+                    return instance ??= new LocationRepo();
+                }
+            }
+        }
+
+        public void SetFragLocal(FragmentLocalization fl)
+        {
+            this.fl = fl;
+        }
+
+        public void AddLocation(long ts, double lat, double lgn)
         {
             Log.Info("Location Repo", "Inserting New Location");
             lastTimestamp = ts;
@@ -40,25 +58,56 @@ namespace MobileApp.Database
             {
                 Timestamp = ts,
                 Latitude = lat,
-                Longitude = lon
+                Longitude = lgn
             };
             me.db.AddLocation(lm);
+            fl.AddPolyLinePoint(new PolyLinesModel{
+                Timestamp = lm.Timestamp/1000,
+                Latitude = lm.Latitude,
+                Longitude = lm.Longitude
+            });
+            Log.Info("Location Repo", "Db size: " + me.GetLocationsLength());
+
+            AddPolyLine(ts, lat, lgn);
 
             if (bufferSize == clearBufferSize)
             {
+                Log.Info("Location Repo", "OnReachedSize event call");
                 OnReachedSize();
                 bufferSize = 0;
             }
         }
 
-        public IEnumerable<LocationModel> GetAllLocations()
+        public void AddPolyLine(long ts, double lat, double lgn)
         {
-            return me.db.GetAllLocations();
+            Log.Info("Location Repo", "Inserting New PolyLine");
+            PolyLinesModel plm = new PolyLinesModel
+            {
+                Timestamp = ts,
+                Latitude = lat,
+                Longitude = lgn
+            };
+            me.db.AddPolyLine(plm);
+        }
+
+        public void AddPolyLines(IEnumerable<PolyLinesModel> plms)
+        {
+            me.db.AddPolyLines(plms);
+        }
+
+        public IEnumerable<PolyLinesModel> GetAllPolyLines()
+        {
+            return me.db.GetAllPolyLines();
         }
 
         public void DeleteAllLocations()
         {
             me.db.DeleteAllLocations();
+        }
+
+        public void DeleteAllPolyLines()
+        {
+            me.db.DeleteAllPolyLines();
         }
 
         public int GetLocationsLength()
@@ -74,13 +123,19 @@ namespace MobileApp.Database
 
         public IEnumerable<LocationModel> GetBuffer()
         {
-            return me.db.GetNLastRows(clearBufferSize);
+            return me.db.GetNLastLocations(clearBufferSize);
         }
 
         public async void OnReachedSize()
         {
-            //Ready buffer to the cloud
+            // Ready buffer to the cloud
             IEnumerable<LocationModel> bufferLocations = GetBuffer();
+
+            // milliseconds to seconds
+            foreach (LocationModel loc in bufferLocations)
+            {
+                loc.Timestamp /= 1000;
+            }
 
             var result = await ConnectionManager.SendGPSData(bufferLocations);
 

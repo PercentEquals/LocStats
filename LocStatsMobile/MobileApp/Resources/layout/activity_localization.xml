@@ -11,6 +11,8 @@
         android:layout_height="wrap_content"
         android:minWidth="25px"
         android:minHeight="25px"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:layout_marginBottom="5dp"
         android:id="@+id/textView5" />
     <TextView
@@ -18,23 +20,57 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:id="@+id/textViewLoggedAs"
         android:layout_marginBottom="15dp"/>
-    
-    <Button
-        android:id="@+id/request_location_updates_button"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/request_location_updates" />
-    <Button
-        android:id="@+id/remove_location_updates_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/remove_location_updates" />
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:gravity="center_horizontal">
+          
+        <Button
+          android:id="@+id/request_location_updates_button"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/request_location_updates" />
+        <Button
+          android:id="@+id/remove_location_updates_button"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/remove_location_updates" />
+    </LinearLayout>
+
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="center_horizontal">
+
+        <Button
+          android:text="04-12-2021"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:id="@+id/buttonSelectDateFrom"
+          android:layout_margin="5dp"/>
+
+        <Button
+          android:text="07-12-2021"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:id="@+id/buttonSelectDateTo"
+          android:layout_margin="5dp"/>
+    </LinearLayout>
+
     <FrameLayout
         android:minWidth="25px"
         android:minHeight="25px"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"
         android:id="@+id/map_container"/>
 </LinearLayout>

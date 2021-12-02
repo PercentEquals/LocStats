@@ -3,7 +3,6 @@ using Android.Views;
 using Android.Widget;
 using MobileApp.Managers;
 using System;
-using AndroidX.Fragment.App;
 
 namespace MobileApp.Fragments
 {
@@ -12,8 +11,6 @@ namespace MobileApp.Fragments
         private TextView _infoText;
         private readonly Action _registerCallback;
         private readonly Action _cancelCallback;
-
-       
 
         public FragmentRegistration(Action registerCallback, Action cancelCallback)
         {
@@ -27,7 +24,6 @@ namespace MobileApp.Fragments
                 
             _infoText = View.FindViewById<TextView>(Resource.Id.infoText);
             _infoText.Visibility = ViewStates.Invisible;
-
 
             View.FindViewById<Button>(Resource.Id.buttonRegister).Click += RegisterButtonClick;
             View.FindViewById<Button>(Resource.Id.buttonCancel).Click += CancelButtonClick;
@@ -50,9 +46,7 @@ namespace MobileApp.Fragments
             EditText editTextUsername = View.FindViewById<EditText>(Resource.Id.editTextUsername);
 
             FormManager.RunForm(_registerCallback, _infoText, editTextPassword.Text, editTextUsername.Text,
-                ConnectionManager.Register, View.FindViewById<Button>(Resource.Id.buttonRegister), editTextEmail.Text);
+                ConnectionManager.Register, View.FindViewById<Button>(Resource.Id.buttonRegister), View.FindViewById<Button>(Resource.Id.buttonCancel), editTextEmail.Text);
         }
-
-        
     }
 }

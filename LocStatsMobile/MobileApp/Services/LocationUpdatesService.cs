@@ -1,5 +1,4 @@
-﻿using System;
-using Android.App;
+﻿using Android.App;
 using Android.Content;
 using Android.Gms.Location;
 using Android.Locations;
@@ -96,7 +95,7 @@ namespace MobileApp.Services
 		public LocationUpdatesService()
 		{
 			_binder = new LocationUpdatesServiceBinder(this);
-            LocRepo = new LocationRepo();
+            LocRepo = LocationRepo.Instance;
         }
 
         public override void OnCreate()

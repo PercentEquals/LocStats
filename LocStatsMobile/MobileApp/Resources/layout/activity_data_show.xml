@@ -2,14 +2,85 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal">
     <TextView
-        android:text="Tutaj będziemy przeglądać dane o naszej lokalizacji"
+        android:text="Statystyki"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_width="match_parent"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:minWidth="25px"
         android:minHeight="25px"
         android:id="@+id/textView1" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:text="04-12-2021"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonSelectDateFrom"
+            android:layout_margin="5dp"/>
+
+        <Button
+            android:text="07-12-2021"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonSelectDateTo"
+            android:layout_margin="5dp"/>
+
+    </LinearLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:text="Dystans (m)"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/infoTextDistance"
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:textColor="@android:color/holo_orange_dark"
+                android:visibility="visible"/>
+
+            <microcharts.droid.ChartView
+                android:id="@+id/chartViewDistance"
+                android:layout_width="match_parent"
+                android:layout_height="361.5dp"
+                android:layout_margin="5dp"/>
+
+            <TextView
+                android:text="Czas (s)"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/infoTextTime"
+                android:layout_marginTop="15dp"
+                android:gravity="center"
+                android:textColor="@android:color/holo_orange_dark"
+                android:visibility="visible"/>
+
+            <microcharts.droid.ChartView
+                android:id="@+id/chartViewTime"
+                android:layout_width="match_parent"
+                android:layout_height="361.5dp"
+                android:layout_margin="5dp"/>
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>
