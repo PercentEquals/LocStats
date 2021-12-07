@@ -8,7 +8,7 @@
     android:paddingLeft="10dp"
     android:paddingRight="10dp">
     <TextView
-        android:text="Zarejestruj się"
+        android:text="Sign in"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
         android:textSize="25dp" 
         android:textStyle="bold"/>
     <TextView
-        android:text="E-mail"
+        android:text="Email"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,13 +36,13 @@
         android:id="@+id/editTextEmail"
         android:defaultFocusHighlightEnabled="true" />
     <TextView
-        android:text="Nazwa użytkownika"
+        android:text="Username"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/text5" />
     <TextView
-        android:text="maks. 16 znaków"
+        android:text="max 16 characters"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -56,13 +56,13 @@
         android:id="@+id/editTextUsername"
         android:defaultFocusHighlightEnabled="true" />
     <TextView
-        android:text="Hasło"
+        android:text="Password"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/textView2" />
     <TextView
-        android:text="8 - 16 znaków, min. 1 znak specjalny\nmin. 1 wielka litera, min. 1 cyfra"
+        android:text="8 - 16 characters, min 1 special\nmin 1 capital, min 1 digit"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -73,12 +73,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/editTextPassword" />
     <Button
-        android:text="Zarejestruj"
+        android:text="Sign in"
         android:layout_width="220.5dp"
         android:layout_height="wrap_content"
         android:id="@+id/buttonRegister" />
     <TextView
-        android:text="Wprowadź poprawne dane"
+        android:text="Provided data is invalid"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="274.0dp"
         android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
         android:layout_gravity="center"
         android:gravity="center_horizontal"/>
     <Button
-        android:text="Anuluj"
+        android:text="Return"
         android:layout_width="128.5dp"
         android:layout_height="38.0dp"
         android:id="@+id/buttonCancel"

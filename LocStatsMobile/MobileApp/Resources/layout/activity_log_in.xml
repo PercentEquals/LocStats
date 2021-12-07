@@ -8,7 +8,7 @@
     android:paddingLeft="10dp"
     android:paddingRight="10dp">
     <TextView
-        android:text="Zaloguj się"
+        android:text="Log in"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="157.5dp"
         android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
         android:foregroundGravity="center"
         android:gravity="center" />
     <TextView
-        android:text="Nazwa użytkownika"
+        android:text="Username"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
         android:minHeight="25px"
         android:id="@+id/editTextUsername" />
     <TextView
-        android:text="Hasło"
+        android:text="Password"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,12 +45,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/editTextPassword" />
     <Button
-        android:text="Zaloguj"
+        android:text="Log in"
         android:layout_width="220.5dp"
         android:layout_height="wrap_content"
         android:id="@+id/buttonLogIn" />
     <TextView
-        android:text="Wprowadź poprawne dane"
+        android:text="Provided data is invalid"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="274.0dp"
         android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
         android:gravity="center_horizontal"/>
 
     <Button
-        android:text="Zarejestruj"
+        android:text="Sign in"
         android:layout_width="150.5dp"
         android:layout_height="wrap_content"
         android:id="@+id/buttonRegister"

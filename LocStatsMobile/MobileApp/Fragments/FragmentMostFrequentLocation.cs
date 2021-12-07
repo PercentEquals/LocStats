@@ -101,7 +101,7 @@ namespace MobileApp.Fragments
             }
             else
             {
-                infoBoxCallback("Błąd", "Podane przedział datowy jest nieprawidłowy!");
+                infoBoxCallback("Error", "Date range is invalid!");
 
                 View.FindViewById<TextView>(Resource.Id.textInfoLocation).Text = "";
                 View.FindViewById<ImageView>(Resource.Id.imageView).SetImageBitmap(null);

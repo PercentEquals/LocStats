@@ -230,7 +230,7 @@ namespace MobileApp.Fragments
                 }
                 else
                 {
-                    Log.Error("Błąd Polylines response", GPSresults.errors);
+                    Log.Error("Error Polylines response", GPSresults.errors);
                 }
             }
             else

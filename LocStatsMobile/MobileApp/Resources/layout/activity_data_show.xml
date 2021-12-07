@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal">
     <TextView
-        android:text="Statystyki"
+        android:text="Stats"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
             android:gravity="center_horizontal">
 
             <TextView
-                android:text="Dystans (m)"
+                android:text="Distance (m)"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
                 android:layout_margin="5dp"/>
 
             <TextView
-                android:text="Czas (s)"
+                android:text="Time (s)"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

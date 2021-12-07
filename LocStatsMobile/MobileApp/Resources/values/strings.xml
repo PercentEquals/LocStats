@@ -1,15 +1,15 @@
 <resources>
   <string name="app_name">LocStats</string>
-  <string name="title_localize">Śledź lokalizację</string>
-  <string name="title_dashboard">Statystyki</string>
-  <string name="title_location">Średnia lokalizacja</string>
-  <string name="location_updated">Lokalizacja zaktualizowana: %1$s</string>
-  <string name="launch_activity">Uruchom</string>
-  <string name="end_service">Zakończ</string>
-  <string name="request_location_updates">Włącz pobieranie lokalizacji</string>
-  <string name="remove_location_updates">Wyłącz pobieranie lokalizacji</string>
-  <string name="permission_rationale">Aplikacja potrzebuje uprawnień do lokalizacji</string>
-  <string name="permission_denied_explanation">Bez lokalizacji aplikacja nie może funkcjonować</string>
-  <string name="settings">Ustawienia</string>
+  <string name="title_localize">Track Location</string>
+  <string name="title_dashboard">Stats</string>
+  <string name="title_location">Frequent Location</string>
+  <string name="location_updated">Location updated: %1$s</string>
+  <string name="launch_activity">Open</string>
+  <string name="end_service">Stop</string>
+  <string name="request_location_updates">Start updating location</string>
+  <string name="remove_location_updates">Stop updating location</string>
+  <string name="permission_rationale">App needs location permission</string>
+  <string name="permission_denied_explanation">Without location app cannot work</string>
+  <string name="settings">Settings</string>
   <string name="ok">OK</string>
 </resources>

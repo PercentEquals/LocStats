@@ -15,14 +15,14 @@ namespace MobileApp.Managers
 
                 if (!emailMatch.Success)
                 {
-                    message = "Niepoprawny adres email";
+                    message = "Invalid email";
                     return false;
                 }
             }
 
             if (username.Length == 0 || username.Length > 16)
             {
-                message = "Niepoprawna nazwa użytkownika";
+                message = "Invalid username";
                 return false;
             }
 
@@ -32,7 +32,7 @@ namespace MobileApp.Managers
 
             if (password.Length > 16 || !passwordMatch.Success)
             {
-                message = "Niepoprawne hasło";
+                message = "Invalid password";
                 return false;
             }
             return true;

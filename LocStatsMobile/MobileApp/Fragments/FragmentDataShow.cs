@@ -137,7 +137,7 @@ namespace MobileApp.Fragments
                 }
                 else
                 {
-                    infoBoxCallback("Błąd", resultTime.errors);
+                    infoBoxCallback("Error", resultTime.errors);
                 }
 
                 selectedDateFromBtn.Enabled = true;
@@ -145,7 +145,7 @@ namespace MobileApp.Fragments
             }
             else
             {
-                infoBoxCallback("Błąd", "Przedział datowy nieprawidłowo wybrany, można wybrać maks. 14 dni");
+                infoBoxCallback("Error", "Date range can contain max 14 days");
                 
             }
         }

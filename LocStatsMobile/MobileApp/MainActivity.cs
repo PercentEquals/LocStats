@@ -79,7 +79,7 @@ namespace MobileApp
         {
             LoadFragment(2);
 
-            ShowMessageBox("Rejestracja", "Rejestracja zakończona sukcesem");
+            ShowMessageBox("Sign in", "Ended with success!");
 
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
             navigation.Visibility = ViewStates.Visible;
@@ -160,7 +160,7 @@ namespace MobileApp
         {
             LoadFragment(2);
 
-            ShowMessageBox("Logowanie", "Logowanie zakończone sukcesem!");
+            ShowMessageBox("Log in", "Ended with success!");
 
             BottomNavigationView navigation = FindViewById<BottomNavigationView>(Resource.Id.navigation);
             navigation.Visibility = ViewStates.Visible;
@@ -169,7 +169,7 @@ namespace MobileApp
         private void ShowMessageBox(string title, string description)
         {
             Android.App.AlertDialog infoBox = new Android.App.AlertDialog.Builder(this)
-                .SetPositiveButton("Zamknij", (sender, args) =>
+                .SetPositiveButton("Close", (sender, args) =>
                 { })
                 .SetMessage(description)
                 .SetTitle(title)
