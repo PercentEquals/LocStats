@@ -1,0 +1,527 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "LocStatsBackendAPI",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/Auth/Register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Adds new unique user to database",
+        "requestBody": {
+          "description": "User to be added",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegistrationRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegistrationRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "201": {
+            "description": "Returns registration confirmation along with token and refresh token"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/api/Auth/Login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Returns JWT for authenticated user",
+        "requestBody": {
+          "description": "User to be logged",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns login confirmation along with token and refresh token"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/Auth/RefreshToken": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Refreshes JWT token using refresh token",
+        "requestBody": {
+          "description": "Token and refresh token",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns new refresh token and brand new refreshed JWT token"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/api/GpsData/Send": {
+      "post": {
+        "tags": [
+          "GpsData"
+        ],
+        "summary": "Saves GPS coordinates on the cloud",
+        "requestBody": {
+          "description": "Timestamp, latitude and longitude",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GpsRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GpsRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/GpsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns sent GPS coordinates"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Something went wrong"
+          }
+        }
+      }
+    },
+    "/api/GpsData/SendMultiple": {
+      "post": {
+        "tags": [
+          "GpsData"
+        ],
+        "summary": "Saves multiple GPS coordinates on the cloud",
+        "requestBody": {
+          "description": "List of Timestamps, latitudes and longitudes",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/GpsRequest"
+                },
+                "description": "List of Timestamps, latitudes and longitudes",
+                "nullable": true
+              }
+            },
+            "text/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/GpsRequest"
+                },
+                "description": "List of Timestamps, latitudes and longitudes",
+                "nullable": true
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/GpsRequest"
+                },
+                "description": "List of Timestamps, latitudes and longitudes",
+                "nullable": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns sent GPS coordinates"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Something went wrong"
+          }
+        }
+      }
+    },
+    "/api/GpsData/{date}": {
+      "get": {
+        "tags": [
+          "GpsData"
+        ],
+        "summary": "Gets GPS coordinates from specific day",
+        "parameters": [
+          {
+            "name": "date",
+            "in": "path",
+            "description": "Date (eq. 2021-11-14)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Date (eq. 2021-11-14)",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns GPS coordinates from specific day"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Something went wrong"
+          }
+        }
+      }
+    },
+    "/api/GpsData/{from}/{to}": {
+      "get": {
+        "tags": [
+          "GpsData"
+        ],
+        "summary": "Gets GPS coordinates from specific range",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "path",
+            "description": "Date from (eq. 2021-11-14)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Date from (eq. 2021-11-14)",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "path",
+            "description": "Date to (eq. 2021-11-14)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Date to (eq. 2021-11-14)",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns GPS coordinates from specific range"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Something went wrong"
+          }
+        }
+      }
+    },
+    "/api/Stats/Time/{from}/{to}": {
+      "get": {
+        "tags": [
+          "Stats"
+        ],
+        "summary": "Returns time usage stats (in seconds) for specified time range - basically how long tracking was enabled",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "path",
+            "description": "Date from (eq. 2021-11-14)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Date from (eq. 2021-11-14)",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "path",
+            "description": "Date to (eq. 2021-11-14)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Date to (eq. 2021-11-14)",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns time usage stats (in seconds)"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Something went wrong"
+          }
+        }
+      }
+    },
+    "/api/Stats/Distance/{from}/{to}": {
+      "get": {
+        "tags": [
+          "Stats"
+        ],
+        "summary": "Returns distance stats (in meters) for specified time range - basically how much meters were tracked",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "path",
+            "description": "Date from (eq. 2021-11-14)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Date from (eq. 2021-11-14)",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "path",
+            "description": "Date to (eq. 2021-11-14)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Date to (eq. 2021-11-14)",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns distance stats (in meters)"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Something went wrong"
+          }
+        }
+      }
+    },
+    "/api/Stats/MostFrequentLocation/{from}/{to}/{clusters}": {
+      "get": {
+        "tags": [
+          "Stats"
+        ],
+        "summary": "Returns most frequent location (lat and long) for specified time range",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "path",
+            "description": "Date from (eq. 2021-11-14)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Date from (eq. 2021-11-14)",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "path",
+            "description": "Date to (eq. 2021-11-14)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Date to (eq. 2021-11-14)",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "clusters",
+            "in": "path",
+            "description": "How many clusters to predict",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "description": "How many clusters to predict",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns most frequent location"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Something went wrong"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UserRegistrationRequest": {
+        "required": [
+          "email",
+          "password",
+          "userName"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserLoginRequest": {
+        "required": [
+          "password",
+          "userName"
+        ],
+        "type": "object",
+        "properties": {
+          "userName": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TokenRequest": {
+        "required": [
+          "refreshToken",
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "refreshToken": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "GpsRequest": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
